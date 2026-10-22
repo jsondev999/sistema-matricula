@@ -1,0 +1,217 @@
+=================================================================================
+UNIVERSIDAD NACIONAL JORGE BASADRE GROHMANN (UNJBG)
+FACULTAD DE INGENIERÍA - ESCUELA PROFESIONAL DE INGENIERÍA EN INFORMÁTICA Y SISTEMAS
+GUÍA DE PRUEBAS DE PROCEDIMIENTOS ALMACENADOS Y FUNCIONES EN MYSQL
+=================================================================================
+
+Base de Datos: sistema_matricula
+Fecha de Evaluación: Octubre 2026
+
+INSTRUCCIONES:
+1. Asegurarse de haber importado previamente el script 'database_completo.sql' en MySQL.
+2. Abrir MySQL Workbench, phpMyAdmin o la consola de MySQL.
+3. Copiar y pegar cada bloque de pruebas para verificar el correcto funcionamiento.
+
+=================================================================================
+CASO 1: VERIFICAR FUNCIÓN DE CRONOGRAMA DE ACCESO (fn_validar_cronograma)
+=================================================================================
+Objetivo: Validar si un estudiante puede ingresar al sistema según la fecha/hora actual (NOW()).
+
+-- Prueba 1.1: Validar para un estudiante REGULAR de ESIS (id_escuela = 1, es_ingresante = FALSE)
+SELECT fn_validar_cronograma(1, FALSE) AS acceso_permitido;
+-- Resultado esperado: 1 (TRUE, dentro del cronograma)
+
+-- Prueba 1.2: Validar para un estudiante INGRESANTE de ESIS (id_escuela = 1, es_ingresante = TRUE)
+SELECT fn_validar_cronograma(1, TRUE) AS acceso_permitido;
+-- Resultado esperado: 1 (TRUE, dentro del cronograma)
+
+-- Prueba 1.3: Validar para una escuela que no tiene cronograma activo (ej. id_escuela = 99)
+SELECT fn_validar_cronograma(99, FALSE) AS acceso_permitido;
+-- Resultado esperado: 0 (FALSE, fuera de cronograma o no existe)
+
+
+=================================================================================
+CASO 2: VERIFICAR VALIDACIÓN DE REQUISITOS DE PORTAFOLIO (fn_validar_requisitos_completos)
+=================================================================================
+Objetivo: Verificar si un estudiante ingresante subió los 4 documentos obligatorios (DNI, Foto, Ingreso, Salud).
+
+-- Prueba 2.1: Estudiante 1 (Ingresante que NO tiene portafolio cargado)
+SELECT fn_validar_requisitos_completos(1) AS tiene_4_documentos;
+-- Resultado esperado: 0 (FALSE, no puede pasar a la cola virtual)
+
+-- Prueba 2.2: Estudiante 2 (Ingresante que SÍ tiene los 4 documentos en estado 'ENTREGADO')
+SELECT fn_validar_requisitos_completos(2) AS tiene_4_documentos;
+-- Resultado esperado: 1 (TRUE, pasa a la cola virtual)
+
+
+=================================================================================
+CASO 3: DETERMINAR LÍMITE DE CRÉDITOS Y CONDICIÓN (sp_determinar_limite_creditos)
+=================================================================================
+Objetivo: Clasificar al estudiante según su promedio y determinar su tope de créditos:
+- Especial: Menos de 12 créditos (Promedio < 11.0)
+- Regular: Entre 12 y 23 créditos (Promedio 11.0 a 13.9)
+- Destacado: Hasta 28 créditos y habilita adelanto (Promedio >= 14.0)
+
+-- Prueba 3.1: Estudiante 4 (Promedio 16.80 -> DESTACADO)
+CALL sp_determinar_limite_creditos(4, @condicion, @limite_min, @limite_max, @adelanto);
+SELECT @condicion AS condicion, @limite_min AS min_cred, @limite_max AS max_cred, @adelanto AS puede_adelantar;
+-- Resultado esperado: condicion='DESTACADO', min_cred=12, max_cred=28, puede_adelantar=1
+
+-- Prueba 3.2: Estudiante 3 (Promedio 13.50 -> REGULAR)
+CALL sp_determinar_limite_creditos(3, @condicion, @limite_min, @limite_max, @adelanto);
+SELECT @condicion AS condicion, @limite_min AS min_cred, @limite_max AS max_cred, @adelanto AS puede_adelantar;
+-- Resultado esperado: condicion='REGULAR', min_cred=12, max_cred=23, puede_adelantar=0
+
+-- Prueba 3.3: Estudiante 5 (Promedio 10.20 -> ESPECIAL)
+CALL sp_determinar_limite_creditos(5, @condicion, @limite_min, @limite_max, @adelanto);
+SELECT @condicion AS condicion, @limite_min AS min_cred, @limite_max AS max_cred, @adelanto AS puede_adelantar;
+-- Resultado esperado: condicion='ESPECIAL', min_cred=1, max_cred=11, puede_adelantar=0
+
+
+=================================================================================
+CASO 4: AGREGAR CURSO A PROFORMA CON BLOQUEO PESIMISTA (sp_matricular_curso)
+=================================================================================
+Objetivo: Reservar cupo aplicando 'SELECT ... FOR UPDATE' sobre la sección,
+descontando la vacante en tiempo real y sumando los créditos a la proforma.
+
+-- Estado inicial: Verificar vacantes de la sección 1 (Base de Datos II - Grupo A)
+SELECT id_seccion, id_curso, grupo, vacantes_totales, vacantes_disponibles, estado 
+FROM seccion WHERE id_seccion = 1;
+-- Inicialmente: vacantes_disponibles = 35
+
+-- Prueba 4.1: Agregar Sección 1 (4 créditos) a la proforma 1 (Estudiante 3)
+CALL sp_matricular_curso(1, 1, @codigo, @mensaje);
+SELECT @codigo AS codigo_respuesta, @mensaje AS mensaje_respuesta;
+-- Resultado esperado: codigo_respuesta = 200, mensaje_respuesta = 'Asignatura y sección agregadas exitosamente...'
+
+-- Verificar que se descontó la vacante en la sección 1:
+SELECT id_seccion, vacantes_disponibles FROM seccion WHERE id_seccion = 1;
+-- Resultado esperado: vacantes_disponibles = 34
+
+-- Verificar que se sumaron 4 créditos a la proforma:
+SELECT id_matricula, total_creditos, estado FROM matricula WHERE id_matricula = 1;
+-- Resultado esperado: total_creditos = 4
+
+-- Prueba 4.2: Intentar agregar otra sección del MISMO curso (ej. Sección 2 de BD II)
+CALL sp_matricular_curso(1, 2, @codigo, @mensaje);
+SELECT @codigo AS codigo, @mensaje AS mensaje;
+-- Resultado esperado: codigo = 400 ('Ya tiene una sección seleccionada para esta asignatura en su proforma.')
+
+-- Prueba 4.3: Agregar más cursos (Sección 3: Ing. Software I - 4 cred, Sección 5: Redes - 4 cred)
+CALL sp_matricular_curso(1, 3, @codigo, @mensaje);
+CALL sp_matricular_curso(1, 5, @codigo, @mensaje);
+SELECT id_matricula, total_creditos FROM matricula WHERE id_matricula = 1;
+-- Resultado esperado: total_creditos = 12
+
+
+=================================================================================
+CASO 5: VERIFICAR CRUCE DE HORARIOS (fn_validar_cruces_horario)
+=================================================================================
+Objetivo: Detectar solapamiento de día y hora entre las secciones de la proforma.
+
+-- Prueba 5.1: Consultar estado actual de la proforma 1 (sin cruces)
+SELECT fn_validar_cruces_horario(1) AS tiene_cruces;
+-- Resultado esperado: 0 (FALSE, no hay conflicto de horario)
+
+-- Prueba 5.2: Forzar un cruce agregando Sección 11 (IA Grupo A: Lunes 08:00 a 10:00, que cruza con BD II Grupo A)
+-- Nota: Estudiante 3 es Regular y la sección 11 tiene 1 vacante.
+CALL sp_matricular_curso(1, 11, @codigo, @mensaje);
+SELECT fn_validar_cruces_horario(1) AS tiene_cruces;
+-- Resultado esperado: 1 (TRUE, conflicto detectado entre BD II y IA los Lunes de 08:00 a 10:00)
+
+
+=================================================================================
+CASO 6: RETIRAR CURSO DE PROFORMA Y RESTITUIR VACANTE (sp_desmatricular_curso)
+=================================================================================
+Objetivo: Quitar la sección en conflicto (Sección 11) y devolver el cupo a la sección.
+
+-- Vacantes antes de retirar:
+SELECT id_seccion, vacantes_disponibles FROM seccion WHERE id_seccion = 11;
+-- vacantes_disponibles = 0 (se había tomado la única vacante)
+
+-- Prueba 6.1: Retirar sección 11 de la proforma 1
+CALL sp_desmatricular_curso(1, 11, @codigo, @mensaje);
+SELECT @codigo AS codigo, @mensaje AS mensaje;
+-- Resultado esperado: codigo = 200 ('Asignatura retirada de la proforma y vacante liberada...')
+
+-- Verificar que la vacante se restituyó (+1):
+SELECT id_seccion, vacantes_disponibles, estado FROM seccion WHERE id_seccion = 11;
+-- Resultado esperado: vacantes_disponibles = 1, estado = 'ABIERTA'
+
+-- Verificar que ya no hay cruces:
+SELECT fn_validar_cruces_horario(1) AS tiene_cruces;
+-- Resultado esperado: 0 (FALSE, sin cruces)
+
+
+=================================================================================
+CASO 7: CONFIRMAR MATRÍCULA Y BLOQUEAR EDICIÓN (sp_confirmar_matricula)
+=================================================================================
+Objetivo: Realizar la confirmación definitiva (PROFORMA -> CONFIRMADA),
+establecer inmutabilidad (es_editable = FALSE) y generar código de verificación PDF.
+
+-- Asociar el pago 1 a la proforma 1 para cumplir la regla de pago:
+UPDATE matricula SET id_pago = 1 WHERE id_matricula = 1;
+
+-- Prueba 7.1: Confirmar matrícula
+CALL sp_confirmar_matricula(1, @codigo, @mensaje);
+SELECT @codigo AS codigo, @mensaje AS mensaje;
+-- Resultado esperado: codigo = 200 ('Matrícula confirmada exitosamente...')
+
+-- Verificar que el estado cambió a CONFIRMADA y es_editable pasó a 0 (FALSE):
+SELECT id_matricula, estado, es_editable, fecha_confirmacion, codigo_verificacion 
+FROM matricula WHERE id_matricula = 1;
+-- Resultado esperado: estado='CONFIRMADA', es_editable=0, codigo_verificacion con hash SHA-256
+
+-- Prueba 7.2: Intentar agregar otro curso después de confirmada (debe ser RECHAZADO)
+CALL sp_matricular_curso(1, 7, @codigo, @mensaje);
+SELECT @codigo AS codigo, @mensaje AS mensaje;
+-- Resultado esperado: codigo = 403 ('La matrícula ya está confirmada o cerrada. No se admiten modificaciones.')
+
+
+=================================================================================
+CASO 8: CONSULTAR LA VISTA DE LA FICHA OFICIAL (vw_ficha_matricula)
+=================================================================================
+Objetivo: Extraer los datos listos para renderizar el documento PDF con membrete.
+
+SELECT 
+    codigo_estudiante,
+    nombre_completo_estudiante,
+    nombre_escuela,
+    codigo_periodo,
+    codigo_curso,
+    nombre_curso,
+    grupo,
+    docente_asignado,
+    horario_completo,
+    total_creditos,
+    codigo_verificacion
+FROM vw_ficha_matricula 
+WHERE id_matricula = 1;
+
+
+=================================================================================
+CASO 9: CANCELACIÓN AUTOMÁTICA POR TIMEOUT DE 5 MINUTOS (sp_cancelar_reserva_timeout)
+=================================================================================
+Objetivo: Demostrar que si un alumno deja abierta la sesión sin confirmar durante
+5 minutos, el sistema libera los cupos automáticamente para otros estudiantes.
+
+-- Crear proforma de prueba para estudiante 5 (Especial)
+INSERT INTO matricula (id_matricula, id_estudiante, id_periodo, total_creditos, estado, es_editable) 
+VALUES (2, 5, 1, 0, 'PROFORMA', TRUE);
+
+-- Estudiante 5 reserva Sección 7 (Sistemas Operativos Grupo A, vacantes = 35)
+CALL sp_matricular_curso(2, 7, @c, @m);
+SELECT vacantes_disponibles FROM seccion WHERE id_seccion = 7; -- vacantes = 34
+
+-- Simular expiración de 5 minutos por inactividad:
+CALL sp_cancelar_reserva_timeout(5, @codigo, @mensaje);
+SELECT @codigo AS codigo, @mensaje AS mensaje;
+-- Resultado esperado: codigo = 200 ('Tiempo de 5 minutos expirado. Reservas temporales liberadas.')
+
+-- Verificar que la vacante de la sección 7 volvió a subir a 35:
+SELECT id_seccion, vacantes_disponibles FROM seccion WHERE id_seccion = 7;
+-- vacantes_disponibles = 35 (liberada)
+
+-- Verificar que la matrícula pasó a estado 'CANCELADA':
+SELECT id_matricula, estado, es_editable FROM matricula WHERE id_matricula = 2;
+-- estado = 'CANCELADA'
