@@ -1,7 +1,7 @@
 <?php
 // =============================================================================
 // ENDPOINT: GET /api/matricula/creditos.php
-// RF-11 y RF-12: Clasifica al estudiante y calcula límite de créditos mediante SP
+// Clasifica al estudiante y calcula límite de créditos mediante SP
 // =============================================================================
 
 require_once __DIR__ . '/../../config/cors.php';

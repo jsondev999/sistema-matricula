@@ -1,8 +1,8 @@
 <?php
 // =============================================================================
 // ENDPOINT: POST /api/cola/ingresar.php
-// RF-06: Bloquear acceso a cola si el ingresante no tiene 4 documentos
-// RF-07: Inscribir estudiante en la sala de espera virtual
+// Bloquear acceso a cola si el ingresante no tiene 4 documentos
+// Inscribir estudiante en la sala de espera virtual
 // =============================================================================
 
 require_once __DIR__ . '/../../config/cors.php';

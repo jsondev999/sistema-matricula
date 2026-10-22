@@ -1,7 +1,7 @@
 <?php
 // =============================================================================
 // ENDPOINT: POST /api/matricula/agregar_curso.php
-// RF-13 y RF-14: Selección de curso y reserva transaccional con BLOQUEO PESIMISTA
+// Selección de curso y reserva transaccional con BLOQUEO PESIMISTA
 // =============================================================================
 
 require_once __DIR__ . '/../../config/cors.php';

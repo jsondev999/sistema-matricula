@@ -1,7 +1,7 @@
 <?php
 // =============================================================================
 // ENDPOINT: GET /api/matricula/catalogo.php
-// RF-13: Consulta asignaturas, secciones Grupo A / B, docentes, vacantes y horarios
+// Consulta asignaturas, secciones Grupo A / B, docentes, vacantes y horarios
 // =============================================================================
 
 require_once __DIR__ . '/../../config/cors.php';

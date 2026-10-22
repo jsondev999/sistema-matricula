@@ -1,7 +1,7 @@
 <?php
 // =============================================================================
 // ENDPOINT: POST /api/auth/logout.php
-// RF-02: Cierre de sesión del estudiante
+// Cierre de sesión del estudiante
 // =============================================================================
 
 require_once __DIR__ . '/../../config/cors.php';

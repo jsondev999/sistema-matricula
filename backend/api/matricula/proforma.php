@@ -1,9 +1,9 @@
 <?php
 // =============================================================================
 // ENDPOINT: GET /api/matricula/proforma.php
-// RF-16: Visualizar horario tentativo
-// RF-17: Detección y alerta de cruces de horario mediante función MySQL
-// RF-18, RF-19: Costo y estado de pago
+// Visualizar horario tentativo
+// Detección y alerta de cruces de horario mediante función MySQL
+// Costo y estado de pago
 // =============================================================================
 
 require_once __DIR__ . '/../../config/cors.php';

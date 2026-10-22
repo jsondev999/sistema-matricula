@@ -1,7 +1,7 @@
 <?php
 // =============================================================================
 // ENDPOINT: GET /api/portafolio/estado.php
-// RF-05 y RF-06: Consulta estado de los 4 documentos del portafolio
+// Consulta estado de los 4 documentos del portafolio
 // =============================================================================
 
 require_once __DIR__ . '/../../config/cors.php';

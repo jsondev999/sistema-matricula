@@ -1,7 +1,7 @@
 <?php
 // =============================================================================
 // ENDPOINT: POST /api/auth/recuperar.php
-// RF-03: Restablecimiento de contraseña olvidada
+// Restablecimiento de contraseña olvidada
 // =============================================================================
 
 require_once __DIR__ . '/../../config/cors.php';

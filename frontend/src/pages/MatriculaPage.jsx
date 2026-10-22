@@ -525,7 +525,7 @@ export default function MatriculaPage() {
             <p style={{ fontSize: "13px", color: "#475569", lineHeight: "1.6", margin: "0 0 20px" }}>
               Está a punto de formalizar su matrícula para el <strong>Periodo 2026-II</strong> con un total de <strong>{totalCreditos} créditos</strong>.
               <br/><br/>
-              ⚠️ <em>De acuerdo con el Reglamento Académico (RF-20 y RF-21), una vez confirmada la matrícula, el estado pasa a <strong>CONFIRMADA</strong> y el registro queda <strong>bloqueado para modificaciones</strong>.</em>
+              ⚠️ <em>De acuerdo con el Reglamento Académico, una vez confirmada la matrícula, el estado pasa a <strong>CONFIRMADA</strong> y el registro queda <strong>bloqueado para modificaciones</strong>.</em>
             </p>
 
             <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>

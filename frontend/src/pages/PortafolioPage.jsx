@@ -71,7 +71,7 @@ export default function PortafolioPage() {
           </div>
           <p style={{ margin: 0, fontSize: "14px", color: "#dbeafe", lineHeight: "1.6" }}>
             Como alumno ingresante, debe adjuntar digitalizados sus <strong>4 documentos obligatorios</strong> en formato <strong>JPG o PNG</strong> (máx. 2 MB cada uno).
-            Por disposición reglamentaria (RF-06), el sistema no permitirá el paso a la cola virtual hasta completar su expediente.
+            Por disposición reglamentaria, el sistema no permitirá el paso a la cola virtual hasta completar su expediente.
           </p>
         </div>
 
@@ -233,7 +233,7 @@ export default function PortafolioPage() {
             ) : (
               <>
                 <ShieldAlert size={18} />
-                <span>Acceso Bloqueado (RF-06)</span>
+                <span>Acceso Bloqueado</span>
               </>
             )}
           </button>

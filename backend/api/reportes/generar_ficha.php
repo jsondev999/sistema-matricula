@@ -1,7 +1,7 @@
 <?php
 // =============================================================================
 // ENDPOINT: GET /api/reportes/generar_ficha.php?id={id_matricula}&format={html|json}
-// RF-21: Generación y descarga de la Ficha Oficial de Matrícula
+// Generación y descarga de la Ficha Oficial de Matrícula
 // =============================================================================
 
 require_once __DIR__ . '/../../config/database.php';

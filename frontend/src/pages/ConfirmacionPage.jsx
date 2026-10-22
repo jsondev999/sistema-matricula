@@ -108,7 +108,7 @@ export default function ConfirmacionPage() {
                   Edición de Cursos
                 </div>
                 <div style={{ fontSize: "16px", fontWeight: "800", color: "#dc2626", marginTop: "2px" }}>
-                  BLOQUEADA (RF-20)
+                  BLOQUEADA
                 </div>
               </div>
             </div>

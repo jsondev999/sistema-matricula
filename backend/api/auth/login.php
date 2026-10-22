@@ -1,8 +1,8 @@
 <?php
 // =============================================================================
 // ENDPOINT: POST /api/auth/login.php
-// RF-01: Validar código y contraseña
-// RF-04: Validar fecha/hora de acceso con fn_validar_cronograma
+// Validar código y contraseña
+// Validar fecha/hora de acceso con fn_validar_cronograma
 // =============================================================================
 
 require_once __DIR__ . '/../../config/cors.php';

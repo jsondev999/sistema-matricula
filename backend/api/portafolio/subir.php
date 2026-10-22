@@ -1,7 +1,7 @@
 <?php
 // =============================================================================
 // ENDPOINT: POST /api/portafolio/subir.php
-// RF-05: Carga de archivo JPG/PNG (máx 2MB) y guardado en portafolio_documento
+// Carga de archivo JPG/PNG (máx 2MB) y guardado en portafolio_documento
 // =============================================================================
 
 require_once __DIR__ . '/../../config/cors.php';

@@ -1,8 +1,8 @@
 <?php
 // =============================================================================
 // ENDPOINT: POST /api/matricula/confirmar.php
-// RF-19: Confirmación transaccional de PROFORMA a CONFIRMADA
-// RF-20: Bloqueo de ediciones (es_editable = FALSE)
+// Confirmación transaccional de PROFORMA a CONFIRMADA
+// Bloqueo de ediciones (es_editable = FALSE)
 // =============================================================================
 
 require_once __DIR__ . '/../../config/cors.php';

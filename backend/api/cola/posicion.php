@@ -1,8 +1,8 @@
 <?php
 // =============================================================================
 // ENDPOINT: GET /api/cola/posicion.php
-// RF-08: Visualizar en qué posición de la cola se encuentra (polling 5s)
-// RF-09: Control del temporizador de 5 minutos y expiración automática
+// Visualizar en qué posición de la cola se encuentra (polling 5s)
+// Control del temporizador de 5 minutos y expiración automática
 // =============================================================================
 
 require_once __DIR__ . '/../../config/cors.php';

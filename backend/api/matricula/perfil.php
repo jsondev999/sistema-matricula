@@ -1,7 +1,7 @@
 <?php
 // =============================================================================
 // ENDPOINT: GET /api/matricula/perfil.php
-// RF-10 y RF-14: Consulta datos académicos del estudiante, periodo y proforma activa
+// Consulta datos académicos del estudiante, periodo y proforma activa
 // =============================================================================
 
 require_once __DIR__ . '/../../config/cors.php';

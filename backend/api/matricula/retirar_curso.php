@@ -1,7 +1,7 @@
 <?php
 // =============================================================================
 // ENDPOINT: POST /api/matricula/retirar_curso.php
-// RF-15: Retiro de asignatura de la proforma y restitución inmediata de vacante
+// Retiro de asignatura de la proforma y restitución inmediata de vacante
 // =============================================================================
 
 require_once __DIR__ . '/../../config/cors.php';

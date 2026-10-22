@@ -1,7 +1,7 @@
 <?php
 // =============================================================================
 // ENDPOINT: POST /api/matricula/timeout.php
-// RF-09: Cancelación y liberación de cupos por temporizador de 5 minutos expirado
+// Cancelación y liberación de cupos por temporizador de 5 minutos expirado
 // =============================================================================
 
 require_once __DIR__ . '/../../config/cors.php';

@@ -1027,7 +1027,7 @@ INSERT INTO horario_seccion (id_seccion, dia_semana, hora_inicio, hora_fin, aula
 -- Password para todos: '123456' (Hash Bcrypt estándar)
 -- Hash: '$2y$10$wS9lG6H6Bupx41XpI0G7p.xI9bN52Fh3gV6NlWfVwVv5yI3z6S6Q2' (o string simple en pruebas)
 INSERT INTO estudiante (id_estudiante, codigo, dni, nombres, apellidos, correo_institucional, password_hash, id_escuela, id_sede, es_ingresante, condicion_academica, promedio_ponderado, creditos_permitidos, estado) VALUES
--- Estudiante 1: Ingresante SIN portafolio (Para probar bloqueo de RF-06)
+-- Estudiante 1: Ingresante SIN portafolio (Para probar bloqueo por documentos pendientes)
 (1, '2026-119001', '71000001', 'Juan Carlos', 'Pérez Condori', 'jperezc@unjbg.edu.pe', '$2y$10$wS9lG6H6Bupx41XpI0G7p.xI9bN52Fh3gV6NlWfVwVv5yI3z6S6Q2', 1, 1, TRUE, 'REGULAR', 0.00, 23, 'ACTIVO'),
 
 -- Estudiante 2: Ingresante CON portafolio completo (Para probar que pasa a la cola)
