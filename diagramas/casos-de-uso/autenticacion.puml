@@ -4,12 +4,16 @@ skinparam packageStyle rectangle
 
 actor "Estudiante" as est
 
-rectangle "Autenticación" {
-    usecase "Validar Credenciales" as UC_Login
-    usecase "Verificar Cronograma por Facultad" as UC_Cronograma
+rectangle "Autenticación y Control de Acceso" {
+    usecase "Iniciar Sesión" as UC_Login
+    usecase "Validar Credenciales (Código y Contraseña)" as UC_ValidarCred
+    usecase "Validar Cronograma de Acceso\n(Facultad y Condición)" as UC_Cronograma
+    usecase "Mostrar Alerta Fuera de Cronograma" as UC_AlertaCronograma
+    
     usecase "Cerrar Sesión" as UC_Logout
-    usecase "Solicitar Recuperación de Contraseña" as UC_ReqRecup
-    usecase "Enviar Enlace de Restablecimiento" as UC_SendEmail
+    
+    usecase "Solicitar Restablecimiento de Contraseña" as UC_ReqRecup
+    usecase "Enviar Enlace a Correo Institucional" as UC_SendEmail
     usecase "Actualizar Contraseña" as UC_UpdatePass
 }
 
@@ -17,7 +21,10 @@ est --> UC_Login
 est --> UC_Logout
 est --> UC_ReqRecup
 
+UC_Login .> UC_ValidarCred : <<include>>
 UC_Login .> UC_Cronograma : <<include>>
+UC_Cronograma <. UC_AlertaCronograma : <<extend>>
+
 UC_ReqRecup .> UC_SendEmail : <<include>>
 UC_SendEmail .> UC_UpdatePass : <<include>>
 @enduml

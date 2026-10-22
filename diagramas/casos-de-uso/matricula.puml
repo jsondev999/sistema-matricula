@@ -4,24 +4,29 @@ skinparam packageStyle rectangle
 
 actor "Estudiante" as est
 
-rectangle "Matrícula" {
-    usecase "Consultar Datos Académicos" as UC_VerPerfil
-    usecase "Consultar Horarios por Grupo" as UC_VerHorarios
+rectangle "Panel de Matrícula y Horarios" {
+    usecase "Consultar Datos Académicos\n(Perfil, Carrera, Sede, Periodo)" as UC_VerPerfil
+    usecase "Consultar Catálogo de Asignaturas" as UC_VerCatalogo
+    usecase "Consultar Horarios por Grupo\n(Grupo A Mañana / Grupo B Tarde)" as UC_VerHorarios
     usecase "Consultar Docentes por Asignatura" as UC_VerDocentes
+    
     usecase "Visualizar Horario Tentativo" as UC_VerGrilla
     usecase "Validar Cruce de Horarios" as UC_ValidarCruce
     usecase "Mostrar Alerta de Incompatibilidad" as UC_AlertaCruce
+    
     usecase "Consultar Costo de Matrícula" as UC_VerCosto
     usecase "Consultar Estado del Pago" as UC_VerPago
 }
 
 est --> UC_VerPerfil
-est --> UC_VerHorarios
-est --> UC_VerDocentes
+est --> UC_VerCatalogo
 est --> UC_VerGrilla
 est --> UC_VerCosto
 est --> UC_VerPago
 
+UC_VerCatalogo .> UC_VerHorarios : <<include>>
+UC_VerCatalogo .> UC_VerDocentes : <<include>>
+
 UC_VerGrilla .> UC_ValidarCruce : <<include>>
-UC_ValidarCruce <. UC_AlertaCruce : <<extend>>
+UC_ValidarCruce <. UC_AlertaCruce : <<extend>> : Cruce detectado
 @enduml

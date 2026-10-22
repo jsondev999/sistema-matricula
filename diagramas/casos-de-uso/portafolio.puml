@@ -2,25 +2,29 @@
 left to right direction
 skinparam packageStyle rectangle
 
-actor "Estudiante" as est
+actor "Estudiante Ingresante" as est
 
-rectangle "Portafolio" {
+rectangle "Portafolio de Admisión" {
+    usecase "Adjuntar Documentos de Admisión\n(JPG / PNG)" as UC_SubirDocs
     usecase "Subir Constancia de Ingreso" as UC_SubirIngreso
-    usecase "Subir Documento de Identidad" as UC_SubirDNI
+    usecase "Subir Documento de Identidad (DNI)" as UC_SubirDNI
     usecase "Subir Foto para Carné" as UC_SubirFoto
     usecase "Subir Constancia de Salud" as UC_SubirSalud
-    usecase "Validar Estado de Requisitos" as UC_ValidarReq
+    
+    usecase "Validar Expediente (4 Documentos)" as UC_ValidarReq
     usecase "Bloquear Acceso a Cola Virtual" as UC_Bloqueo
+    usecase "Habilitar Acceso a Cola Virtual" as UC_HabilitarCola
 }
 
-est --> UC_SubirIngreso
-est --> UC_SubirDNI
-est --> UC_SubirFoto
-est --> UC_SubirSalud
+est --> UC_SubirDocs
 
-UC_ValidarReq <. UC_Bloqueo : <<extend>>
-UC_SubirIngreso .> UC_ValidarReq : <<include>>
-UC_SubirDNI .> UC_ValidarReq : <<include>>
-UC_SubirFoto .> UC_ValidarReq : <<include>>
-UC_SubirSalud .> UC_ValidarReq : <<include>>
+UC_SubirDocs .> UC_SubirIngreso : <<include>>
+UC_SubirDocs .> UC_SubirDNI : <<include>>
+UC_SubirDocs .> UC_SubirFoto : <<include>>
+UC_SubirDocs .> UC_SubirSalud : <<include>>
+
+UC_SubirDocs .> UC_ValidarReq : <<include>>
+
+UC_ValidarReq <. UC_Bloqueo : <<extend>> : Incompleto
+UC_ValidarReq <. UC_HabilitarCola : <<extend>> : Completo
 @enduml

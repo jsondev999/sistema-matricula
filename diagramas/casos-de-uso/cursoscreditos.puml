@@ -6,17 +6,22 @@ actor "Estudiante" as est
 
 rectangle "Cursos y Créditos" {
     usecase "Consultar Créditos Preestablecidos" as UC_VerCreditos
-    usecase "Clasificar Condición del Estudiante" as UC_Clasificar
-    usecase "Calcular Límite de Créditos" as UC_CalcLimite
+    usecase "Clasificar Condición del Estudiante\n(Especial, Regular, Destacado)" as UC_Clasificar
+    usecase "Calcular Límite de Créditos\n(Procedimiento Almacenado)" as UC_CalcLimite
     usecase "Habilitar Adelanto de Cursos" as UC_Adelanto
+    
     usecase "Seleccionar Curso y Sección" as UC_SelCurso
     usecase "Verificar Disponibilidad de Vacantes" as UC_VerifVac
-    usecase "Reservar Cupo con Bloqueo Pesimista" as UC_BloqueoPes
-    usecase "Descontar Vacante Disponibles" as UC_DescVac
+    usecase "Reservar Cupo con Bloqueo Pesimista\n(SELECT FOR UPDATE)" as UC_BloqueoPes
+    usecase "Descontar Vacante Temporal" as UC_DescVac
+    
+    usecase "Retirar Curso de Proforma" as UC_RetirarCurso
+    usecase "Restituir Vacante Disponible" as UC_RestituirVac
 }
 
 est --> UC_VerCreditos
 est --> UC_SelCurso
+est --> UC_RetirarCurso
 
 UC_VerCreditos .> UC_Clasificar : <<include>>
 UC_Clasificar .> UC_CalcLimite : <<include>>
@@ -25,4 +30,6 @@ UC_CalcLimite <. UC_Adelanto : <<extend>>
 UC_SelCurso .> UC_VerifVac : <<include>>
 UC_VerifVac .> UC_BloqueoPes : <<include>>
 UC_BloqueoPes .> UC_DescVac : <<include>>
+
+UC_RetirarCurso .> UC_RestituirVac : <<include>>
 @enduml
