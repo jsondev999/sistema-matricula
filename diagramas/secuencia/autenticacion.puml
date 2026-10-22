@@ -2,25 +2,26 @@
 autonumber
 skinparam SequenceMessageAlignment center
 
-actor "Estudiante (React)" as Client
-participant "Frontend (Vercel)" as React
-participant "API Router / Middleware" as API
-participant "AuthController (Laravel)" as Auth
-database "MySQL Workbench" as DB
+actor "Estudiante" as Client
+participant "Frontend (React SPA)" as React
+participant "login.php (PHP Puro / PDO)" as API
+database "MySQL (InnoDB)" as DB
 
-Client -> React: Ingresa código y contraseña
-React -> API: POST /api/v1/login {codigo, password}
-API -> Auth: login(request)
-Auth -> DB: SELECT id, password, es_ingresante, id_escuela\nFROM estudiante WHERE codigo = p_codigo
-DB --> Auth: Retorna credenciales y perfil
+Client -> React: Ingresa código universitario y contraseña
+React -> API: POST /api/login.php\nBody: {codigo, password}
+activate API
 
-alt Credenciales Válidas
-    Auth -> DB: SELECT fn_validar_cronograma(id_escuela, es_ingresante)
-    DB --> Auth: Cronograma Permitido (TRUE / FALSE)
+API -> DB: SELECT id_estudiante, password_hash, es_ingresante, id_escuela\nFROM estudiante WHERE codigo = ?
+DB --> API: Retorna credenciales y perfil académico
+
+alt Credenciales Válidas (password_verify)
+    API -> DB: SELECT fn_validar_cronograma(id_escuela, es_ingresante)
+    DB --> API: Cronograma Permitido (TRUE / FALSE)
     
     alt Dentro de Cronograma
-        Auth -> Auth: Crear API Token (Laravel Sanctum)
-        Auth --> React: 200 OK {token: BearerToken, es_ingresante}
+        API -> API: Iniciar Sesión (Session Token / JWT)
+        API --> React: 200 OK {token: "xyz...", es_ingresante: bool}
+        deactivate API
         
         alt es_ingresante == TRUE
             React --> Client: Redirige a /portafolio
@@ -28,11 +29,15 @@ alt Credenciales Válidas
             React --> Client: Redirige a /cola-virtual
         end
     else Fuera de Cronograma
-        Auth --> React: 403 Forbidden ("Acceso no permitido por cronograma")
-        React --> Client: Muestra mensaje de error de fecha/hora
+        activate API
+        API --> React: 403 Forbidden ("Acceso no permitido por cronograma")
+        deactivate API
+        React --> Client: Muestra mensaje con fecha/hora de su turno
     end
-else Credenciales Invalides
-    Auth --> React: 401 Unauthorized ("Código o contraseña incorrecta")
-    React --> Client: Muestra alerta de error
+else Credenciales Inválidas
+    activate API
+    API --> React: 401 Unauthorized ("Código o contraseña incorrectos")
+    deactivate API
+    React --> Client: Muestra alerta de credenciales incorrectas
 end
 @enduml

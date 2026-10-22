@@ -2,30 +2,39 @@
 autonumber
 skinparam SequenceMessageAlignment center
 
-actor "Estudiante" as Client
+actor "Estudiante Ingresante" as Client
 participant "React App" as React
-participant "PortafolioController" as Controller
-database "MySQL Workbench" as DB
+participant "portafolio_upload.php (PHP / PDO)" as API
+database "MySQL (InnoDB)" as DB
 
-Client -> React: Selecciona archivo (JPG/PNG) y da clic en "Guardar"
-React -> Controller: POST /api/v1/portafolio/subir\nHeaders: BearerToken\nBody: Multipart(file, tipo_documento)
-Controller -> Controller: Validar formato (jpg, png) y tamaño (max 2MB)
+Client -> React: Selecciona archivo (JPG/PNG) y pulsa "Guardar"
+React -> API: POST /api/portafolio_upload.php\nHeaders: BearerToken\nBody: Multipart(file, id_tipo_documento)
+activate API
 
-alt Formato Válido
-    Controller -> DB: INSERT INTO portafolio_documento(id_estudiante, tipo, ruta, estado)\nVALUES (?, ?, ?, 'ENTREGADO')\nON DUPLICATE KEY UPDATE
-    DB --> Controller: Confirmación de registro
-    Controller -> DB: SELECT fn_validar_requisitos_completos(id_estudiante)
-    DB --> Controller: Requisitos Completos (TRUE / FALSE)
+API -> API: Validar formato (jpg, png) y peso (max 2MB)
+
+alt Formato y Peso Válidos
+    API -> API: Almacenar archivo físico en /uploads/portafolio/
+    API -> DB: INSERT INTO portafolio_documento\n(id_estudiante, id_tipo_documento, ruta_archivo, formato, peso_kb, estado)\nVALUES (?, ?, ?, ?, ?, 'ENTREGADO')\nON DUPLICATE KEY UPDATE ruta_archivo = VALUES(ruta_archivo)
+    DB --> API: Confirmación de guardado
+    
+    API -> DB: SELECT fn_validar_requisitos_completos(id_estudiante)
+    DB --> API: Requisitos Completados (TRUE / FALSE)
     
     alt 4 Documentos Completados
-        Controller --> React: 200 OK {status: "COMPLETO", redirect: "/cola-virtual"}
+        API --> React: 200 OK {status: "COMPLETO", redirect: "/cola-virtual"}
+        deactivate API
         React --> Client: Habilita botón "Continuar a Matrícula"
     else Faltan Documentos
-        Controller --> React: 200 OK {status: "INCOMPLETO", faltantes: ["Salud"]}
-        React --> Client: Actualiza checklist de documentos entregados
+        activate API
+        API --> React: 200 OK {status: "INCOMPLETO", faltantes: ["Salud"]}
+        deactivate API
+        React --> Client: Actualiza checklist con distintivo verde
     end
-else Formato Inválido
-    Controller --> React: 422 Unprocessable Entity ("Solo se aceptan archivos JPG/PNG")
+else Formato o Peso Inválido
+    activate API
+    API --> React: 422 Unprocessable Entity ("Solo se aceptan archivos JPG/PNG de hasta 2MB")
+    deactivate API
     React --> Client: Muestra mensaje de error
 end
 @enduml
