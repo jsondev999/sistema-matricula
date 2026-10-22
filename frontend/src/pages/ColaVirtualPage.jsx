@@ -45,6 +45,7 @@ export default function ColaVirtualPage() {
         setPollingCount((prev) => prev + 1);
 
         if (res.turno_activo) {
+          setError("");
           setTurnoActivo(true);
         }
       } catch (err) {

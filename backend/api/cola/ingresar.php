@@ -72,7 +72,7 @@ $id_periodo = $stmtPeriodo->fetch()['id_periodo'] ?? 1;
 
 $stmtProforma = $pdo->prepare("
     INSERT IGNORE INTO matricula (id_estudiante, id_periodo, total_creditos, monto_total, estado, es_editable, fecha_creacion_proforma)
-    VALUES (?, ?, 0, 120.00, 'PROFORMA', TRUE)
+    VALUES (?, ?, 0, 120.00, 'PROFORMA', TRUE, NOW())
 ");
 $stmtProforma->execute([$estudiante['id_estudiante'], $id_periodo]);
 
