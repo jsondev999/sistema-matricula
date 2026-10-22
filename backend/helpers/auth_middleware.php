@@ -1,6 +1,6 @@
 <?php
 // =============================================================================
-// MIDDLEWARE DE AUTENTICACIÓN Y MANEJO DE TOKENS EN PHP PURO
+// MIDDLEWARE DE AUTENTICACIÓN Y MANEJO DE TOKENS EN PHP 8
 // =============================================================================
 
 require_once __DIR__ . '/../config/database.php';

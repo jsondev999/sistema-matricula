@@ -16,7 +16,7 @@ El sistema implementa una **Arquitectura Cliente-Servidor Desacoplada (Decoupled
 [ Cliente Web (Navegador) ]
           │
           ▼
-   React SPA (Vite)  ──(HTTP / JSON Fetch con CORS)──►  Backend PHP 8 Puro (Apache / XAMPP)
+   React SPA (Vite)  ──(HTTP / JSON Fetch con CORS)──►  Backend PHP 8 (Apache / XAMPP)
                                                                  │
                                                        (Conexión PDO / SQL)
                                                                  ▼
@@ -26,7 +26,7 @@ El sistema implementa una **Arquitectura Cliente-Servidor Desacoplada (Decoupled
 
 ### Principios de Diseño:
 1. **Frontend (React + Vite):** Interfaz Single Page Application (SPA) modular, rápida y responsiva, encargada del temporizador de 5 minutos, la sala de espera asíncrona y la grilla de horarios interactiva.
-2. **Backend (PHP 8 Puro con PDO):** **Cero frameworks** (sin Laravel, sin Symfony). Consiste en micro-controladores/endpoints REST atómicos que procesan peticiones, manejan sesiones y delegan la lógica crítica a los Stored Procedures de MySQL.
+2. **Backend (PHP 8 con PDO):** Arquitectura modular basada en micro-controladores/endpoints REST atómicos que procesan peticiones, manejan sesiones y delegan la lógica crítica a los Stored Procedures de MySQL.
 3. **Capa de Persistencia (MySQL 8.0 InnoDB):** Base de datos normalizada en 3FN que garantiza consistencia ACID, bloqueos pesimistas a nivel de fila (`SELECT ... FOR UPDATE`) para evitar sobrecupos y transacciones atómicas.
 
 ---
@@ -45,7 +45,7 @@ sistema-matricula/
 │   ├── database_completo.sql          # Script consolidado todo-en-uno exportado de MySQL
 │   └── pruebas_mysql.txt              # [EXIGIDO POR DOCENTE] Comandos TXT para probar en MySQL
 │
-├── backend/                           # Backend en PHP 8 Puro (Cero frameworks)
+├── backend/                           # Backend en PHP 8 (Micro-controladores REST)
 │   ├── config/
 │   │   ├── database.php               # Conexión PDO Singleton a MySQL
 │   │   └── cors.php                   # Cabeceras CORS (Allow-Origin) y Content-Type JSON
@@ -124,7 +124,7 @@ sistema-matricula/
 
 ---
 
-## 3. DETALLE DE RESPONSABILIDADES: BACKEND (PHP PURO + PDO)
+## 3. DETALLE DE RESPONSABILIDADES: BACKEND (PHP 8 + PDO)
 
 Cada archivo en `backend/api/` sigue el principio de **Responsabilidad Única (SRP)**:
 
@@ -227,7 +227,7 @@ El docente exige una carpeta comprimida con scripts ejecutables y ejemplos en `.
    ```
 4. Importa el archivo consolidado `database/database_completo.sql`.
 
-### Paso 2: Configurar el Backend (PHP Puro)
+### Paso 2: Configurar el Backend (PHP 8)
 1. Coloca la carpeta del proyecto en `C:\xampp\htdocs\sistema-matricula\`.
 2. Verifica que `backend/config/database.php` apunte a `localhost`, usuario `root`, contraseña vacía `""` y base de datos `sistema_matricula`.
 3. Prueba la conexión abriendo en el navegador:

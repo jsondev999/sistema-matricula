@@ -4,7 +4,7 @@ skinparam SequenceMessageAlignment center
 
 actor "Estudiante" as Client
 participant "Frontend (React SPA)" as React
-participant "login.php (PHP Puro / PDO)" as API
+participant "login.php (PHP 8 / PDO)" as API
 database "MySQL (InnoDB)" as DB
 
 Client -> React: Ingresa código universitario y contraseña

@@ -1,6 +1,6 @@
 <?php
 // =============================================================================
-// CONEXIÓN A BASE DE DATOS (MYSQL CON PDO EN PHP PURO)
+// CONEXIÓN A BASE DE DATOS (MYSQL CON PDO EN PHP 8)
 // Patrón Singleton para optimizar el pool de conexiones en el servidor
 // =============================================================================
 

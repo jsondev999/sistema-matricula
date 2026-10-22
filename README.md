@@ -9,7 +9,7 @@
 | Capa | Tecnología | Justificación y Cumplimiento de Rúbrica |
 | :--- | :--- | :--- |
 | **Frontend** | React 19 + Vite + Lucide Icons | Interfaz moderna tipo Single Page Application (SPA), cuadrícula semanal de horarios interactiva, temporizador animado de 5 minutos y sala de espera virtual con sondeo en tiempo real. |
-| **Backend** | PHP 8.2 Puro + PDO | **Sin frameworks** (estricto cumplimiento del requerimiento docente). Patrón Singleton para PDO, validación de sesiones con tokens HMAC, endpoints REST modulares y respuestas JSON normalizadas. |
+| **Backend** | PHP 8.2 + PDO | Arquitectura modular basada en micro-controladores REST atómicos, patrón Singleton para PDO, validación de sesiones con tokens HMAC y respuestas JSON normalizadas. |
 | **Base de Datos** | MySQL 8.0+ (Motor InnoDB) | Normalización en Tercera Forma Normal (**3FN**), integridad referencial estricta, bloqueo pesimista de vacantes con `SELECT ... FOR UPDATE` en transacciones ACID, procedimientos almacenados, funciones y vistas. |
 
 ---
@@ -18,7 +18,7 @@
 
 ```text
 sistema-matricula/
-├── backend/                         # Backend en PHP 8 Puro (Sin frameworks)
+├── backend/                         # Backend en PHP 8 (Micro-controladores REST)
 │   ├── api/
 │   │   ├── auth/                    # login.php, logout.php, recuperar.php
 │   │   ├── portafolio/              # estado.php, subir.php (JPG/PNG máx 2MB)
@@ -69,7 +69,7 @@ sistema-matricula/
    ```
    *Esto creará la base de datos `sistema_matricula_unjbg` con todas las 18 tablas, procedimientos, funciones, vistas y datos iniciales de prueba.*
 
-### 2. Backend (PHP 8 Puro)
+### 2. Backend (PHP 8)
 Puede ejecutarse de dos maneras:
 - **Opción A (Recomendada con servidor embebido de PHP)**:
   ```bash
@@ -120,4 +120,4 @@ Para facilitar la evaluación del docente y las pruebas, la pantalla de Login in
   - En `DOCUMENTACION_BD.md` con tablas formateadas con Atributo, Tipo de Dato, Claves, Nulabilidad y Propósito, más el diagrama Mermaid de 18 entidades.
 - **Diagramas de Casos de Uso y Secuencia**:
   - Casos de uso CU-01 a CU-06 con especificación completa e imágenes renderizadas en `diagramas/casos-de-uso/`.
-  - Diagramas de secuencia en `diagramas/secuencia/` actualizados a React + PHP Puro + MySQL InnoDB.
+  - Diagramas de secuencia en `diagramas/secuencia/` actualizados a React + PHP 8 + MySQL InnoDB.
