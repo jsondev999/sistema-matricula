@@ -93,7 +93,7 @@ El modelo relacional ha sido diseñado para soportar de forma robusta la alta co
 | Nombre del Atributo | Tipo de Dato | Claves | Nulabilidad | Descripción y Propósito |
 | :--- | :--- | :---: | :---: | :--- |
 | `id_estudiante` | INT AUTO_INCREMENT | **PK** | NOT NULL | Identificador único del estudiante. |
-| `codigo` | VARCHAR(10) | **UK** | NOT NULL | Código universitario del alumno (ej. "2024-119001"). |
+| `codigo` | VARCHAR(20) | **UK** | NOT NULL | Código universitario del alumno (ej. "2026-119001"). |
 | `dni` | CHAR(8) | **UK** | NOT NULL | Número de Documento Nacional de Identidad. |
 | `nombres` | VARCHAR(100) | - | NOT NULL | Nombres completos del estudiante. |
 | `apellidos` | VARCHAR(100) | - | NOT NULL | Apellidos paterno y materno del estudiante. |

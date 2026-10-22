@@ -92,7 +92,7 @@ CREATE TABLE tipo_documento_requisito (
 -- -----------------------------------------------------------------------------
 CREATE TABLE estudiante (
     id_estudiante INT AUTO_INCREMENT PRIMARY KEY,
-    codigo VARCHAR(10) NOT NULL UNIQUE, -- Ej: '2024-119001'
+    codigo VARCHAR(20) NOT NULL UNIQUE, -- Ej: '2026-119001'
     dni CHAR(8) NOT NULL UNIQUE,
     nombres VARCHAR(100) NOT NULL,
     apellidos VARCHAR(100) NOT NULL,
