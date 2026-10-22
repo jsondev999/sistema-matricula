@@ -1,0 +1,37 @@
+@startuml validacion
+autonumber
+skinparam SequenceMessageAlignment center
+
+actor "Estudiante" as Client
+participant "React App" as React
+participant "MatriculaController" as Controller
+database "MySQL Workbench" as DB
+
+Client -> React: Clic en "Confirmar Matrícula"
+React -> Controller: POST /api/v1/matricula/confirmar\nBody: {id_proforma}
+
+Controller -> DB: SELECT fn_validar_cruces_horario(p_id_proforma)
+DB --> Controller: Cruces Detectados (TRUE / FALSE)
+
+alt Sin Cruces de Horario
+    Controller -> DB: START TRANSACTION
+    Controller -> DB: UPDATE matricula SET estado = 'CONFIRMADA',\nfecha_confirmacion = NOW() WHERE id = p_id_proforma
+    Controller -> DB: UPDATE proforma_bloqueo SET editable = FALSE
+    Controller -> DB: COMMIT
+    DB --> Controller: Transacción Exitosa
+    
+    Controller --> React: 200 OK {estado: "CONFIRMADA", mensaje: "Matrícula finalizada"}
+    React --> Client: Muestra pantalla de éxito y habilita "Descargar Ficha PDF"
+    
+    Client -> React: Clic en "Descargar Ficha de Matrícula (PDF)"
+    React -> Controller: GET /api/v1/matricula/pdf/{id_matricula}
+    Controller -> DB: SELECT * FROM vw_ficha_matricula WHERE id_matricula = ?
+    DB --> Controller: Retorna datos consolidados de la ficha
+    Controller -> Controller: Generar Stream de PDF (DomPDF)
+    Controller --> React: 200 OK (file_stream application/pdf)
+    React --> Client: Descarga o abre el archivo Ficha_Matricula.pdf
+else Existe Cruce de Horario
+    Controller --> React: 400 Bad Request ("Tiene asignaturas en conflicto de horario")
+    React --> Client: Pinta de rojo los bloques en conflicto y deshabilita confirmación
+end
+@enduml

@@ -1,0 +1,21 @@
+@startuml cola virtual
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Estudiante" as est
+
+rectangle "Cola Virtual" {
+    usecase "Ingresar a Sala de Espera" as UC_IngresarCola
+    usecase "Consultar Posición en Fila" as UC_VerTurno
+    usecase "Asignar Tiempo Límite de Sesión" as UC_Timer
+    usecase "Notificar Habilitación de Turno" as UC_TurnoActivo
+    usecase "Cancelar Reserva Temporal por Expiracion" as UC_CancelarReserva
+}
+
+est --> UC_IngresarCola
+
+UC_IngresarCola .> UC_VerTurno : <<include>>
+UC_IngresarCola .> UC_Timer : <<include>>
+UC_Timer <. UC_CancelarReserva : <<extend>>
+UC_VerTurno .> UC_TurnoActivo : <<include>>
+@enduml

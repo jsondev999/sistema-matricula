@@ -1,0 +1,23 @@
+@startuml autenticacion
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Estudiante" as est
+
+rectangle "Autenticación" {
+    usecase "Validar Credenciales" as UC_Login
+    usecase "Verificar Cronograma por Facultad" as UC_Cronograma
+    usecase "Cerrar Sesión" as UC_Logout
+    usecase "Solicitar Recuperación de Contraseña" as UC_ReqRecup
+    usecase "Enviar Enlace de Restablecimiento" as UC_SendEmail
+    usecase "Actualizar Contraseña" as UC_UpdatePass
+}
+
+est --> UC_Login
+est --> UC_Logout
+est --> UC_ReqRecup
+
+UC_Login .> UC_Cronograma : <<include>>
+UC_ReqRecup .> UC_SendEmail : <<include>>
+UC_SendEmail .> UC_UpdatePass : <<include>>
+@enduml

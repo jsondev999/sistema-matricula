@@ -1,0 +1,22 @@
+@startuml confirmacion
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Estudiante" as est
+
+rectangle "Confirmación" {
+    usecase "Confirmar Selección de Matrícula" as UC_Confirmar
+    usecase "Cambiar Estado a Confirmada" as UC_CambiarEstado
+    usecase "Bloquear Edición de Registros" as UC_BloquearEdicion
+    usecase "Generar Ficha de Matrícula" as UC_GenFicha
+    usecase "Descargar Ficha en Formato PDF" as UC_DescargarPDF
+}
+
+est --> UC_Confirmar
+est --> UC_DescargarPDF
+
+UC_Confirmar .> UC_CambiarEstado : <<include>>
+UC_CambiarEstado .> UC_BloquearEdicion : <<include>>
+UC_Confirmar .> UC_GenFicha : <<include>>
+UC_DescargarPDF .> UC_GenFicha : <<include>>
+@enduml

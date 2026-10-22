@@ -1,0 +1,31 @@
+@startuml portafolio
+autonumber
+skinparam SequenceMessageAlignment center
+
+actor "Estudiante" as Client
+participant "React App" as React
+participant "PortafolioController" as Controller
+database "MySQL Workbench" as DB
+
+Client -> React: Selecciona archivo (JPG/PNG) y da clic en "Guardar"
+React -> Controller: POST /api/v1/portafolio/subir\nHeaders: BearerToken\nBody: Multipart(file, tipo_documento)
+Controller -> Controller: Validar formato (jpg, png) y tamaño (max 2MB)
+
+alt Formato Válido
+    Controller -> DB: INSERT INTO portafolio_documento(id_estudiante, tipo, ruta, estado)\nVALUES (?, ?, ?, 'ENTREGADO')\nON DUPLICATE KEY UPDATE
+    DB --> Controller: Confirmación de registro
+    Controller -> DB: SELECT fn_validar_requisitos_completos(id_estudiante)
+    DB --> Controller: Requisitos Completos (TRUE / FALSE)
+    
+    alt 4 Documentos Completados
+        Controller --> React: 200 OK {status: "COMPLETO", redirect: "/cola-virtual"}
+        React --> Client: Habilita botón "Continuar a Matrícula"
+    else Faltan Documentos
+        Controller --> React: 200 OK {status: "INCOMPLETO", faltantes: ["Salud"]}
+        React --> Client: Actualiza checklist de documentos entregados
+    end
+else Formato Inválido
+    Controller --> React: 422 Unprocessable Entity ("Solo se aceptan archivos JPG/PNG")
+    React --> Client: Muestra mensaje de error
+end
+@enduml

@@ -1,0 +1,26 @@
+@startuml portafolio
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Estudiante" as est
+
+rectangle "Portafolio" {
+    usecase "Subir Constancia de Ingreso" as UC_SubirIngreso
+    usecase "Subir Documento de Identidad" as UC_SubirDNI
+    usecase "Subir Foto para Carné" as UC_SubirFoto
+    usecase "Subir Constancia de Salud" as UC_SubirSalud
+    usecase "Validar Estado de Requisitos" as UC_ValidarReq
+    usecase "Bloquear Acceso a Cola Virtual" as UC_Bloqueo
+}
+
+est --> UC_SubirIngreso
+est --> UC_SubirDNI
+est --> UC_SubirFoto
+est --> UC_SubirSalud
+
+UC_ValidarReq <. UC_Bloqueo : <<extend>>
+UC_SubirIngreso .> UC_ValidarReq : <<include>>
+UC_SubirDNI .> UC_ValidarReq : <<include>>
+UC_SubirFoto .> UC_ValidarReq : <<include>>
+UC_SubirSalud .> UC_ValidarReq : <<include>>
+@enduml

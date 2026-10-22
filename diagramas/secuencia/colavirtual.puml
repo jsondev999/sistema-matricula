@@ -1,0 +1,48 @@
+@startuml colavirtual
+autonumber
+skinparam SequenceMessageAlignment center
+
+actor "Estudiante" as Client
+participant "React App (setInterval)" as React
+participant "ColaController" as Queue
+participant "MatriculaController" as Controller
+database "MySQL Workbench" as DB
+
+== Fase 1: Cola Virtual mediante Polling ==
+loop Cada 5 segundos mientras posición > 1
+    React -> Queue: GET /api/v1/cola/posicion\nHeaders: BearerToken
+    Queue -> DB: SELECT posicion FROM cola_virtual WHERE id_estudiante = ?
+    DB --> Queue: Posición actual (ej. #08)
+    Queue --> React: 200 OK {posicion: 8, espera_estimada: "2 min"}
+    React --> Client: Actualiza número en pantalla
+end
+
+Queue --> React: 200 OK {posicion: 1, turno_activo: true, expira_en: "300s"}
+React -> React: Inicia Temporizador Regresivo (5 minutos)
+React --> Client: Redirige al Panel de Selección de Cursos
+
+== Fase 2: Selección de Cursos y Reserva Transaccional ==
+Client -> React: Selecciona Sección y presiona "Agregar"
+React -> Controller: POST /api/v1/matricula/agregar-curso\nBody: {id_seccion, id_proforma}
+Controller -> DB: CALL sp_matricular_curso(p_id_proforma, p_id_seccion, @codigo, @mensaje)
+
+activate DB
+    DB -> DB: START TRANSACTION
+    DB -> DB: SELECT vacantes_disponibles FROM seccion WHERE id = p_seccion FOR UPDATE
+    note over DB: Bloqueo Pesimista (FOR UPDATE)
+    
+    alt Vacantes > 0 AND CreditosAcumulados + Curso <= LímitePermitido
+        DB -> DB: INSERT INTO detalle_proforma(...)
+        DB -> DB: UPDATE seccion SET vacantes_disponibles = vacantes_disponibles - 1
+        DB -> DB: COMMIT
+        DB --> Controller: @codigo = 200, @mensaje = "OK"
+        Controller --> React: 200 OK {mensaje: "Curso agregado exitosamente"}
+        React --> Client: Actualiza horario tentativo y contador de créditos
+    else Sin Vacantes O Supera Límite Créditos
+        DB -> DB: ROLLBACK
+        DB --> Controller: @codigo = 400, @mensaje = "Error en validación"
+        Controller --> React: 400 Bad Request {@mensaje}
+        React --> Client: Muestra alerta con el motivo del rechazo
+    end
+deactivate DB
+@enduml
