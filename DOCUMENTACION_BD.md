@@ -214,7 +214,7 @@ El modelo relacional ha sido diseñado para soportar de forma robusta la alta co
 | `id_periodo` | INT | **FK** | NOT NULL | Periodo académico de dictado (`periodo_academico.id_periodo`). |
 | `id_docente` | INT | **FK** | NOT NULL | Docente titular asignado (`docente.id_docente`). |
 | `grupo` | ENUM('A','B') | - | NOT NULL | Identificador de grupo: **A (Mañana)** o **B (Tarde)**. |
-| `turno` | ENUM('MANANA','TARDE') | - | NOT NULL | Franja horaria principal de la sección. |
+| `turno` | ENUM('MAÑANA','TARDE') | - | NOT NULL | Franja horaria principal de la sección. |
 | `vacantes_totales` | INT | - | NOT NULL | Capacidad física máxima instalada para la sección (ej. 40). |
 | `vacantes_disponibles` | INT | - | NOT NULL | **Campo con Bloqueo Pesimista (`FOR UPDATE`).** Cupos libres en tiempo real. |
 | `estado` | ENUM('ABIERTA','CERRADA') | - | NOT NULL | Estado de la sección. Pasa a 'CERRADA' si vacantes_disponibles = 0. |

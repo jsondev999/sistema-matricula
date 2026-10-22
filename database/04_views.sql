@@ -75,7 +75,7 @@ SELECT
     c.horas_teoria,
     c.horas_practica,
     sec.grupo, -- 'A' o 'B'
-    sec.turno, -- 'MANANA' o 'TARDE'
+    sec.turno, -- 'MAÑANA' o 'TARDE'
     sec.vacantes_totales,
     sec.vacantes_disponibles,
     sec.estado AS estado_seccion,

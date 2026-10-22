@@ -47,7 +47,6 @@ foreach ($cursos as $c) {
 
     $seccionesConHorario = [];
     foreach ($secciones as $sec) {
-        $sec['turno'] = ($sec['turno'] === 'MANANA') ? 'MAÑANA' : $sec['turno'];
         $stmtHorarios->execute([':id_seccion' => $sec['id_seccion']]);
         $sec['horarios'] = $stmtHorarios->fetchAll();
         $seccionesConHorario[] = $sec;

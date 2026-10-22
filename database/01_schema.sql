@@ -216,7 +216,7 @@ CREATE TABLE seccion (
     id_periodo INT NOT NULL,
     id_docente INT NOT NULL,
     grupo ENUM('A', 'B') NOT NULL, -- 'A': Mañana, 'B': Tarde
-    turno ENUM('MAÑANA', 'TARDE', 'MANANA') NOT NULL DEFAULT 'MAÑANA',
+    turno ENUM('MAÑANA', 'TARDE') NOT NULL DEFAULT 'MAÑANA',
     vacantes_totales INT NOT NULL DEFAULT 40,
     vacantes_disponibles INT NOT NULL DEFAULT 40, -- SOBRE ESTE CAMPO SE HACE FOR UPDATE
     estado ENUM('ABIERTA', 'CERRADA') NOT NULL DEFAULT 'ABIERTA',

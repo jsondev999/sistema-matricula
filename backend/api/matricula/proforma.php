@@ -62,7 +62,6 @@ $itemsConHorarios = [];
 $todosLosBloques = [];
 
 foreach ($items as $item) {
-    $item['turno'] = ($item['turno'] === 'MANANA') ? 'MAÑANA' : $item['turno'];
     $stmtHorarios->execute([':id_seccion' => $item['id_seccion']]);
     $horarios = $stmtHorarios->fetchAll();
     $item['horarios'] = $horarios;

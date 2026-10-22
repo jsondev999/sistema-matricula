@@ -216,7 +216,7 @@ CREATE TABLE seccion (
     id_periodo INT NOT NULL,
     id_docente INT NOT NULL,
     grupo ENUM('A', 'B') NOT NULL, -- 'A': Mañana, 'B': Tarde
-    turno ENUM('MAÑANA', 'TARDE', 'MANANA') NOT NULL DEFAULT 'MAÑANA',
+    turno ENUM('MAÑANA', 'TARDE') NOT NULL DEFAULT 'MAÑANA',
     vacantes_totales INT NOT NULL DEFAULT 40,
     vacantes_disponibles INT NOT NULL DEFAULT 40, -- SOBRE ESTE CAMPO SE HACE FOR UPDATE
     estado ENUM('ABIERTA', 'CERRADA') NOT NULL DEFAULT 'ABIERTA',
@@ -892,7 +892,7 @@ SELECT
     c.horas_teoria,
     c.horas_practica,
     sec.grupo, -- 'A' o 'B'
-    sec.turno, -- 'MANANA' o 'TARDE'
+    sec.turno, -- 'MAÑANA' o 'TARDE'
     sec.vacantes_totales,
     sec.vacantes_disponibles,
     sec.estado AS estado_seccion,
@@ -968,22 +968,22 @@ INSERT INTO docente (id_docente, codigo, dni, nombres, apellidos, correo_institu
 -- 11. SECCIONES (Grupo A Mañana / Grupo B Tarde)
 INSERT INTO seccion (id_seccion, id_curso, id_periodo, id_docente, grupo, turno, vacantes_totales, vacantes_disponibles, estado) VALUES
 -- IS-501: Base de Datos II
-(1, 1, 1, 1, 'A', 'MANANA', 35, 35, 'ABIERTA'),
+(1, 1, 1, 1, 'A', 'MAÑANA', 35, 35, 'ABIERTA'),
 (2, 1, 1, 1, 'B', 'TARDE',  35, 35, 'ABIERTA'),
 -- IS-502: Ingeniería de Software I
-(3, 2, 1, 2, 'A', 'MANANA', 35, 35, 'ABIERTA'),
+(3, 2, 1, 2, 'A', 'MAÑANA', 35, 35, 'ABIERTA'),
 (4, 2, 1, 2, 'B', 'TARDE',  35, 35, 'ABIERTA'),
 -- IS-503: Redes y Comunicaciones
-(5, 3, 1, 3, 'A', 'MANANA', 35, 35, 'ABIERTA'),
+(5, 3, 1, 3, 'A', 'MAÑANA', 35, 35, 'ABIERTA'),
 (6, 3, 1, 3, 'B', 'TARDE',  35, 35, 'ABIERTA'),
 -- IS-504: Sistemas Operativos
-(7, 4, 1, 4, 'A', 'MANANA', 35, 35, 'ABIERTA'),
+(7, 4, 1, 4, 'A', 'MAÑANA', 35, 35, 'ABIERTA'),
 (8, 4, 1, 4, 'B', 'TARDE',  35, 35, 'ABIERTA'),
 -- IS-505: Estadística y Probabilidades
-(9, 5, 1, 2, 'A', 'MANANA', 35, 35, 'ABIERTA'),
+(9, 5, 1, 2, 'A', 'MAÑANA', 35, 35, 'ABIERTA'),
 (10, 5, 1, 2, 'B', 'TARDE', 35, 35, 'ABIERTA'),
 -- IS-601: Inteligencia Artificial (Adelanto) - SECCIÓN CON 1 VACANTE (Para probar que se agota!)
-(11, 6, 1, 1, 'A', 'MANANA', 1, 1, 'ABIERTA');
+(11, 6, 1, 1, 'A', 'MAÑANA', 1, 1, 'ABIERTA');
 
 -- 12. HORARIOS DE LAS SECCIONES
 -- Grupo A: Lunes a Viernes por la Mañana (08:00 a 12:00)
