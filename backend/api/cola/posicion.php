@@ -13,6 +13,17 @@ require_once __DIR__ . '/../../helpers/auth_middleware.php';
 $estudiante = verificar_token();
 $pdo = Database::getConnection();
 
+// 0. Limpiar automáticamente turnos expirados que ya no hacen polling
+//    (usuarios que cerraron la página sin confirmar ni esperar el timeout)
+$stmtLimpiar = $pdo->prepare("
+    UPDATE cola_virtual 
+    SET estado_turno = 'EXPIRADO'
+    WHERE estado_turno = 'TURNO_HABILITADO' 
+      AND fecha_expiracion IS NOT NULL 
+      AND fecha_expiracion < NOW()
+");
+$stmtLimpiar->execute();
+
 // 1. Consultar estado en cola
 $stmt = $pdo->prepare("
     SELECT id_cola, posicion, estado_turno, fecha_inicio_turno, fecha_expiracion,
