@@ -38,7 +38,25 @@ if (!$cola) {
     json_error("No se encuentra registrado en la cola virtual.", 404, ['redirect' => '/cola-virtual']);
 }
 
-// 2. Si el turno ya estaba habilitado, verificar si el tiempo de 5 minutos expiró
+// 2a. Estados terminales — redirigir apropiadamente
+if ($cola['estado_turno'] === 'EXPIRADO' || $cola['estado_turno'] === 'CANCELADA') {
+    json_error("Su turno expiró o fue cancelado. Puede reingresar a la cola.", 410, [
+        'expirado'  => true,
+        'redirect'  => '/cola-virtual'
+    ]);
+}
+
+if ($cola['estado_turno'] === 'FINALIZADO') {
+    json_response([
+        'posicion'      => 0,
+        'estado_turno'  => 'FINALIZADO',
+        'turno_activo'  => false,
+        'espera_estimada' => 'Matrícula completada',
+        'redirect'      => '/confirmacion'
+    ]);
+}
+
+// 2b. Si el turno ya estaba habilitado, verificar si el tiempo de 5 minutos expiró
 if ($cola['estado_turno'] === 'TURNO_HABILITADO' || $cola['estado_turno'] === 'EN_MATRICULA') {
     $segundosRestantes = (int)($cola['segundos_restantes'] ?? 0);
 
@@ -61,6 +79,7 @@ if ($cola['estado_turno'] === 'TURNO_HABILITADO' || $cola['estado_turno'] === 'E
         'espera_estimada'    => '¡Es tu turno!'
     ]);
 }
+
 
 // 3. Si aún está en espera, calcular avance si los que estaban antes ya salieron
 $posicion = (int)$cola['posicion'];

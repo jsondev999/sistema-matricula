@@ -48,9 +48,23 @@ export default function ColaVirtualPage() {
           setError("");
           setTurnoActivo(true);
         }
+
+        // Si el backend dice que ya está confirmado, redirigir a confirmación
+        if (res.estado_turno === "FINALIZADO" || res.redirect === "/confirmacion") {
+          clearInterval(intervalo);
+          setView("confirmacion");
+        }
       } catch (err) {
-        if (err.data?.redirect === "/portafolio") {
+        const redirect = err.data?.redirect;
+        if (redirect === "/portafolio") {
           setView("portafolio");
+        } else if (redirect === "/confirmacion") {
+          clearInterval(intervalo);
+          setView("confirmacion");
+        } else if (redirect === "/cola-virtual" || err.data?.expirado) {
+          // Turno expirado o cancelado — detener polling y mostrar aviso
+          clearInterval(intervalo);
+          setError("Su turno expiró. Si desea matricularse, recargue la página para reingresar a la cola.");
         } else {
           setError(err.message);
         }
@@ -59,6 +73,7 @@ export default function ColaVirtualPage() {
 
     return () => clearInterval(intervalo);
   }, [turnoActivo, setView]);
+
 
   return (
     <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
