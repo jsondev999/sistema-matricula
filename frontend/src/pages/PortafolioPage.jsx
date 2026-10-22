@@ -95,7 +95,7 @@ export default function PortafolioPage() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px", borderBottom: "1px solid #f1f5f9", paddingBottom: "12px" }}>
             <h3 style={{ margin: 0, fontSize: "16px", color: "#1e293b" }}>Documentos Exigidos por Admisión</h3>
             <span style={{ fontSize: "13px", fontWeight: "700", color: completos ? "#16a34a" : "#ca8a04", background: completos ? "#dcfce7" : "#fef9c3", padding: "4px 12px", borderRadius: "12px" }}>
-              {totalEntregados} de 4 entregados
+              {totalEntregados} de {documentos.length} entregados
             </span>
           </div>
 

@@ -36,7 +36,7 @@ $stmtHorarios = $pdo->prepare("
            TIME_FORMAT(hora_fin, '%H:%i') AS hora_fin, aula
     FROM horario_seccion
     WHERE id_seccion = :id_seccion
-    ORDER BY FIELD(dia_semana, 'LUNES', 'MARTES', 'MIERCOLES', 'JUEVES', 'VIERNES', 'SABADO'), hora_inicio ASC
+    ORDER BY FIELD(dia_semana, 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO'), hora_inicio ASC
 ");
 
 $catalogo = [];

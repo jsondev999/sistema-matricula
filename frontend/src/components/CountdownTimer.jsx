@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Clock, AlertTriangle } from "lucide-react";
 
-export default function CountdownTimer({ onTimeout, initialSeconds = 300 }) {
-  const [seconds, setSeconds] = useState(initialSeconds);
+export default function CountdownTimer({ onTimeout, initialSeconds }) {
+  // Leer segundos reales del servidor (guardados al salir de la cola)
+  const realSeconds = initialSeconds ?? parseInt(localStorage.getItem("turno_segundos") || "300", 10);
+  const [seconds, setSeconds] = useState(realSeconds);
 
   useEffect(() => {
     if (seconds <= 0) {

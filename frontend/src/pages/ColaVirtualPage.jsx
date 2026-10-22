@@ -9,6 +9,7 @@ export default function ColaVirtualPage() {
   const [posicion, setPosicion] = useState(null);
   const [esperaEstimada, setEsperaEstimada] = useState("Calculando...");
   const [turnoActivo, setTurnoActivo] = useState(false);
+  const [segundosRestantes, setSegundosRestantes] = useState(300);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [pollingCount, setPollingCount] = useState(0);
@@ -21,6 +22,8 @@ export default function ColaVirtualPage() {
         const res = await api.ingresarCola();
         setPosicion(res.posicion);
         if (res.turno_activo) {
+          // Sincronizar con el tiempo real restante del servidor
+          if (res.segundos_restantes) setSegundosRestantes(res.segundos_restantes);
           setTurnoActivo(true);
         }
       } catch (err) {
@@ -46,6 +49,7 @@ export default function ColaVirtualPage() {
 
         if (res.turno_activo) {
           setError("");
+          if (res.segundos_restantes) setSegundosRestantes(res.segundos_restantes);
           setTurnoActivo(true);
         }
 
@@ -148,7 +152,7 @@ export default function ColaVirtualPage() {
                 </div>
 
                 <button
-                  onClick={() => setView("matricula")}
+                  onClick={() => { localStorage.setItem("turno_segundos", segundosRestantes); setView("matricula"); }}
                   style={{
                     background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
                     color: "#ffffff",

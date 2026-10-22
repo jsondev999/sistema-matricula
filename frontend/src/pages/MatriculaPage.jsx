@@ -71,11 +71,11 @@ export default function MatriculaPage() {
   const handleTimeout = async () => {
     try {
       await api.timeoutMatricula();
-      alert("Su tiempo de 5 minutos ha expirado. Se liberaron las reservas temporales.");
-      setView("cola");
     } catch (e) {
-      setView("cola");
+      // ignorar error de red
     }
+    setError("Su tiempo de 5 minutos ha expirado. Las reservas temporales han sido liberadas.");
+    setTimeout(() => setView("cola"), 2500);
   };
 
   // Agregar curso con bloqueo pesimista

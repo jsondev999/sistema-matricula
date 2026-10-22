@@ -35,6 +35,12 @@ $stmtCola = $pdo->prepare("
 $stmtCola->execute([$estudiante['id_estudiante']]);
 $cola = $stmtCola->fetch();
 
+// Si ya existe pero está en estado terminal, eliminar para permitir reingreso
+if ($cola && in_array($cola['estado_turno'], ['EXPIRADO', 'CANCELADA'])) {
+    $pdo->prepare("DELETE FROM cola_virtual WHERE id_cola = ?")->execute([$cola['id_cola']]);
+    $cola = null;
+}
+
 if (!$cola) {
     // Calcular siguiente posición correlativa en la cola
     $stmtMax = $pdo->query("SELECT IFNULL(MAX(posicion), 0) + 1 AS siguiente FROM cola_virtual WHERE estado_turno IN ('EN_ESPERA', 'TURNO_HABILITADO')");
@@ -76,9 +82,20 @@ $stmtProforma = $pdo->prepare("
 ");
 $stmtProforma->execute([$estudiante['id_estudiante'], $id_periodo]);
 
+// Obtener segundos restantes reales si el turno ya está habilitado
+$segundosRestantes = null;
+if ($cola['estado_turno'] === 'TURNO_HABILITADO' && isset($cola['expira_en'])) {
+    $segundosRestantes = (int)$cola['expira_en'];
+} elseif ($cola['estado_turno'] === 'TURNO_HABILITADO' && isset($cola['fecha_expiracion'])) {
+    $stmtSeg = $pdo->prepare("SELECT GREATEST(0, TIMESTAMPDIFF(SECOND, NOW(), ?)) AS seg");
+    $stmtSeg->execute([$cola['fecha_expiracion']]);
+    $segundosRestantes = (int)($stmtSeg->fetch()['seg'] ?? 300);
+}
+
 json_response([
-    'mensaje'      => 'Registrado en sala de espera.',
-    'posicion'     => (int)$cola['posicion'],
-    'estado_turno' => $cola['estado_turno'],
-    'turno_activo' => ($cola['posicion'] == 1 && $cola['estado_turno'] === 'TURNO_HABILITADO')
+    'mensaje'           => 'Registrado en sala de espera.',
+    'posicion'          => (int)$cola['posicion'],
+    'estado_turno'      => $cola['estado_turno'],
+    'turno_activo'      => ($cola['posicion'] == 1 && $cola['estado_turno'] === 'TURNO_HABILITADO'),
+    'segundos_restantes'=> $segundosRestantes
 ]);
