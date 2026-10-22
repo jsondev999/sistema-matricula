@@ -241,9 +241,9 @@ if ($format === 'json') {
                 <td><?= htmlspecialchars($row['nombre_curso']) ?></td>
                 <td class="text-center"><?= htmlspecialchars($row['ciclo_curso']) ?></td>
                 <td class="text-center" style="font-weight: 600;"><?= htmlspecialchars($row['creditos_curso']) ?></td>
-                <td class="text-center"><?= htmlspecialchars($row['grupo']) ?> (<?= htmlspecialchars($row['turno']) ?>)</td>
+                <td class="text-center"><?= htmlspecialchars($row['grupo']) ?> (<?= htmlspecialchars($row['turno'] === 'MANANA' ? 'MAÑANA' : $row['turno']) ?>)</td>
                 <td><?= htmlspecialchars($row['docente_asignado']) ?></td>
-                <td style="font-size: 11px;"><?= htmlspecialchars($row['horario_completo']) ?></td>
+                <td style="font-size: 11px;"><?= htmlspecialchars(str_replace(['MIERCOLES', 'SABADO'], ['MIÉRCOLES', 'SÁBADO'], $row['horario_completo'])) ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>

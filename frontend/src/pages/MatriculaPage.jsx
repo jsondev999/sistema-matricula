@@ -9,6 +9,20 @@ import {
   ArrowRight, Users, Sparkles
 } from "lucide-react";
 
+const formatTurno = (t) => {
+  if (!t) return "";
+  return t.toUpperCase() === "MANANA" ? "MAÑANA" : t;
+};
+
+const formatDia = (d) => {
+  if (!d) return "";
+  switch (d.toUpperCase()) {
+    case "MIERCOLES": return "MIÉRCOLES";
+    case "SABADO": return "SÁBADO";
+    default: return d;
+  }
+};
+
 export default function MatriculaPage() {
   const { user, setView, setActiveMatriculaId } = useAuth();
   
@@ -271,7 +285,7 @@ export default function MatriculaPage() {
                             <div>
                               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
                                 <strong style={{ fontSize: "13px", color: "#1e3a8a" }}>
-                                  Grupo {sec.grupo} ({sec.turno})
+                                  Grupo {sec.grupo} ({formatTurno(sec.turno)})
                                 </strong>
                                 <span style={{
                                   fontSize: "11px",
@@ -289,7 +303,7 @@ export default function MatriculaPage() {
                               <div style={{ fontSize: "10px", color: "#64748b", marginBottom: "8px" }}>
                                 {sec.horarios?.map((h, i) => (
                                   <div key={i}>
-                                    {h.dia_semana} {h.hora_inicio}-{h.hora_fin} ({h.aula})
+                                    {formatDia(h.dia_semana)} {h.hora_inicio}-{h.hora_fin} ({h.aula})
                                   </div>
                                 ))}
                               </div>

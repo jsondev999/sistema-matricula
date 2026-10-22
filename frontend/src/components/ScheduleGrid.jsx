@@ -71,7 +71,7 @@ export default function ScheduleGrid({ bloques = [], cruces = [] }) {
             <ul style={{ margin: "4px 0 0 16px", padding: 0 }}>
               {cruces.map((c, idx) => (
                 <li key={idx}>
-                  Conflicto el <strong>{c.dia}</strong> entre <strong>{c.curso_1}</strong> y <strong>{c.curso_2}</strong> ({c.rango}).
+                  Conflicto el <strong>{c.dia === "MIERCOLES" ? "MIÉRCOLES" : c.dia === "SABADO" ? "SÁBADO" : c.dia}</strong> entre <strong>{c.curso_1}</strong> y <strong>{c.curso_2}</strong> ({c.rango}).
                 </li>
               ))}
             </ul>
@@ -92,7 +92,7 @@ export default function ScheduleGrid({ bloques = [], cruces = [] }) {
               </th>
               {DIAS.map((dia) => (
                 <th key={dia} style={{ padding: "8px", background: "#f1f5f9", border: "1px solid #e2e8f0", color: "#334155", textAlign: "center", fontWeight: "600" }}>
-                  {dia}
+                  {dia === "MIERCOLES" ? "MIÉRCOLES" : dia === "SABADO" ? "SÁBADO" : dia}
                 </th>
               ))}
             </tr>
