@@ -14,6 +14,14 @@ export default function ColaVirtualPage() {
   const [error, setError] = useState("");
   const [pollingCount, setPollingCount] = useState(0);
   const [turnoExpirado, setTurnoExpirado] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
+
+  // Detectar cambio de tamaño de pantalla
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Función reutilizable para registrar/re-registrar en cola
   const registrarEnCola = async () => {
@@ -119,22 +127,39 @@ export default function ColaVirtualPage() {
     return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
   };
 
-  const isUrgent = turnoActivo && segundosRestantes <= 60;
-  const isMedium = turnoActivo && segundosRestantes <= 120 && segundosRestantes > 60;
+  const isUrgent  = turnoActivo && segundosRestantes <= 60;
+  const isMedium  = turnoActivo && segundosRestantes <= 120 && segundosRestantes > 60;
   const timerColor = isUrgent ? "#ef4444" : isMedium ? "#f59e0b" : "#10b981";
-  const timerBg   = isUrgent ? "rgba(239,68,68,0.15)" : isMedium ? "rgba(245,158,11,0.15)" : "rgba(16,185,129,0.15)";
+  const timerBg    = isUrgent ? "rgba(239,68,68,0.15)" : isMedium ? "rgba(245,158,11,0.15)" : "rgba(16,185,129,0.15)";
 
   return (
     <div style={{ minHeight: "100vh", background: "#f8fafc" }}>
       <Navbar />
 
-      <main style={{ maxWidth: "680px", margin: "40px auto", padding: "0 20px" }} className="fade-in">
+      <main style={{
+        maxWidth: "680px",
+        margin: isMobile ? "16px auto" : "40px auto",
+        padding: isMobile ? "0 12px" : "0 20px"
+      }} className="fade-in">
+
+        {/* Alerta de error / turno expirado */}
         {(error || turnoExpirado) && (
-          <div style={{ background: "#fee2e2", borderLeft: "4px solid #ef4444", color: "#991b1b", padding: "14px", borderRadius: "8px", marginBottom: "20px", display: "flex", gap: "10px" }}>
-            <AlertCircle size={20} color="#dc2626" style={{ flexShrink: 0 }} />
+          <div style={{
+            background: "#fee2e2",
+            borderLeft: "4px solid #ef4444",
+            color: "#991b1b",
+            padding: isMobile ? "10px 12px" : "14px",
+            borderRadius: "8px",
+            marginBottom: "16px",
+            display: "flex",
+            gap: "8px",
+            fontSize: isMobile ? "13px" : "14px",
+            lineHeight: "1.5"
+          }}>
+            <AlertCircle size={18} color="#dc2626" style={{ flexShrink: 0, marginTop: "2px" }} />
             <span>
               {turnoExpirado
-                ? "⏰ Tu tiempo de 5 minutos ha expirado. Tus reservas fueron liberadas. Recarga la página para volver a la cola."
+                ? "⏰ Tu tiempo expiró. Tus reservas fueron liberadas. Recarga para volver a la cola."
                 : error}
             </span>
           </div>
@@ -142,7 +167,7 @@ export default function ColaVirtualPage() {
 
         <div style={{
           background: "#ffffff",
-          borderRadius: "20px",
+          borderRadius: isMobile ? "16px" : "20px",
           border: "1px solid #e2e8f0",
           boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.05)",
           overflow: "hidden",
@@ -156,26 +181,38 @@ export default function ColaVirtualPage() {
               ? "linear-gradient(135deg, #10b981 0%, #059669 100%)"
               : "linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%)",
             color: "#ffffff",
-            padding: "36px 20px",
+            padding: isMobile ? "24px 16px" : "36px 20px",
             transition: "all 0.5s ease"
           }}>
             <div style={{
               display: "inline-flex",
               background: "rgba(255, 255, 255, 0.2)",
-              padding: "16px",
+              padding: isMobile ? "12px" : "16px",
               borderRadius: "50%",
-              marginBottom: "14px"
+              marginBottom: isMobile ? "10px" : "14px"
             }}>
-              {turnoActivo ? <Sparkles size={48} color="#ffffff" /> : <Users size={48} color="#ffffff" />}
+              {turnoActivo
+                ? <Sparkles size={isMobile ? 36 : 48} color="#ffffff" />
+                : <Users    size={isMobile ? 36 : 48} color="#ffffff" />}
             </div>
-            <h2 style={{ fontSize: "24px", color: "#ffffff", margin: 0 }}>
+            <h2 style={{
+              fontSize: isMobile ? "17px" : "24px",
+              color: "#ffffff",
+              margin: 0,
+              lineHeight: "1.3"
+            }}>
               {turnoExpirado
                 ? "TURNO EXPIRADO"
                 : turnoActivo
                 ? "¡ES TU TURNO DE MATRÍCULA!"
                 : "SALA DE ESPERA VIRTUAL"}
             </h2>
-            <p style={{ margin: "8px 0 0", color: "rgba(255,255,255,0.85)", fontSize: "14px" }}>
+            <p style={{
+              margin: "6px 0 0",
+              color: "rgba(255,255,255,0.85)",
+              fontSize: isMobile ? "12px" : "14px",
+              lineHeight: "1.5"
+            }}>
               {turnoExpirado
                 ? "Su tiempo se agotó. Puede reingresar a la cola recargando la página."
                 : turnoActivo
@@ -185,23 +222,37 @@ export default function ColaVirtualPage() {
           </div>
 
           {/* Cuerpo Central */}
-          <div style={{ padding: "40px 30px" }}>
+          <div style={{ padding: isMobile ? "24px 16px" : "40px 30px" }}>
             {loading ? (
-              <div style={{ padding: "20px", color: "#64748b" }}>Ingresando a la cola virtual...</div>
+              <div style={{ padding: "20px", color: "#64748b", fontSize: isMobile ? "14px" : "16px" }}>
+                Ingresando a la cola virtual...
+              </div>
             ) : turnoActivo ? (
               <div className="fade-in">
+                {/* Tarjeta de turno activo */}
                 <div style={{
                   background: "#ecfdf5",
                   border: `2px solid ${timerColor}`,
                   borderRadius: "16px",
-                  padding: "24px",
-                  marginBottom: "26px",
+                  padding: isMobile ? "18px 14px" : "24px",
+                  marginBottom: isMobile ? "18px" : "26px",
                   transition: "border-color 0.5s"
                 }}>
-                  <div style={{ fontSize: "15px", color: "#065f46", fontWeight: "600", marginBottom: "6px" }}>
+                  <div style={{
+                    fontSize: isMobile ? "12px" : "15px",
+                    color: "#065f46",
+                    fontWeight: "600",
+                    marginBottom: "4px",
+                    letterSpacing: "0.5px"
+                  }}>
                     TURNO HABILITADO
                   </div>
-                  <div style={{ fontSize: "40px", fontWeight: "800", color: "#047857", letterSpacing: "1px" }}>
+                  <div style={{
+                    fontSize: isMobile ? "28px" : "40px",
+                    fontWeight: "800",
+                    color: "#047857",
+                    letterSpacing: "1px"
+                  }}>
                     TURNO ACTIVO #01
                   </div>
 
@@ -209,28 +260,29 @@ export default function ColaVirtualPage() {
                   <div style={{
                     display: "inline-flex",
                     alignItems: "center",
-                    gap: "8px",
+                    gap: "6px",
                     background: timerBg,
                     border: `1px solid ${timerColor}`,
                     color: timerColor,
-                    padding: "8px 24px",
+                    padding: isMobile ? "6px 16px" : "8px 24px",
                     borderRadius: "30px",
-                    marginTop: "14px",
+                    marginTop: "12px",
                     fontWeight: "800",
-                    fontSize: "28px",
+                    fontSize: isMobile ? "24px" : "28px",
                     fontFamily: "monospace",
                     animation: isUrgent ? "pulseRed 1s infinite" : "none"
                   }}>
-                    <Clock size={22} />
+                    <Clock size={isMobile ? 18 : 22} />
                     {formatTime(segundosRestantes)}
                   </div>
-                  <div style={{ fontSize: "12px", color: "#6b7280", marginTop: "6px" }}>
+                  <div style={{ fontSize: "12px", color: "#6b7280", marginTop: "6px", lineHeight: "1.4" }}>
                     {isUrgent
                       ? "⚠️ ¡Tiempo casi agotado! Ingresa ya."
                       : "Este reloj continúa corriendo al ingresar a matricularte"}
                   </div>
                 </div>
 
+                {/* Botón de acción — ancho completo en móvil */}
                 <button
                   onClick={() => setView("matricula")}
                   disabled={segundosRestantes <= 0}
@@ -240,46 +292,82 @@ export default function ColaVirtualPage() {
                       : "linear-gradient(135deg, #10b981 0%, #059669 100%)",
                     color: "#ffffff",
                     border: "none",
-                    padding: "16px 36px",
+                    padding: isMobile ? "14px 20px" : "16px 36px",
                     borderRadius: "10px",
-                    fontSize: "16px",
+                    fontSize: isMobile ? "14px" : "16px",
                     fontWeight: "700",
                     cursor: segundosRestantes <= 0 ? "not-allowed" : "pointer",
-                    display: "inline-flex",
+                    display: isMobile ? "flex" : "inline-flex",
                     alignItems: "center",
+                    justifyContent: "center",
                     gap: "10px",
+                    width: isMobile ? "100%" : "auto",
                     boxShadow: segundosRestantes > 0 ? "0 10px 15px -3px rgba(16,185,129,0.4)" : "none",
                     animation: segundosRestantes > 0 ? "bounceFadeIn 0.5s ease" : "none"
                   }}
                 >
-                  <span>Ingresar a Selección de Cursos</span>
-                  <ArrowRight size={20} />
+                  <span>{isMobile ? "Ingresar a Matricularme" : "Ingresar a Selección de Cursos"}</span>
+                  <ArrowRight size={isMobile ? 18 : 20} />
                 </button>
               </div>
             ) : !turnoExpirado ? (
               <div>
+                {/* Tarjeta de posición en espera */}
                 <div style={{
                   background: "#f8fafc",
                   border: "2px dashed #cbd5e1",
                   borderRadius: "16px",
-                  padding: "28px",
-                  marginBottom: "24px"
+                  padding: isMobile ? "20px 14px" : "28px",
+                  marginBottom: isMobile ? "18px" : "24px"
                 }}>
-                  <div style={{ fontSize: "13px", color: "#64748b", fontWeight: "600", textTransform: "uppercase", letterSpacing: "1px" }}>
+                  <div style={{
+                    fontSize: "13px",
+                    color: "#64748b",
+                    fontWeight: "600",
+                    textTransform: "uppercase",
+                    letterSpacing: "1px"
+                  }}>
                     Tu Posición en la Fila
                   </div>
-                  <div style={{ fontSize: "56px", fontWeight: "900", color: "#1e3a8a", margin: "6px 0" }}>
+                  <div style={{
+                    fontSize: isMobile ? "44px" : "56px",
+                    fontWeight: "900",
+                    color: "#1e3a8a",
+                    margin: "4px 0"
+                  }}>
                     #{String(posicion || "--").padStart(2, "0")}
                   </div>
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: "6px", background: "#e0f2fe", color: "#0369a1", padding: "6px 16px", borderRadius: "20px", fontSize: "13px", fontWeight: "600" }}>
-                    <Clock size={16} />
-                    <span>Tiempo estimado de espera: {esperaEstimada}</span>
+                  <div style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    background: "#e0f2fe",
+                    color: "#0369a1",
+                    padding: "6px 14px",
+                    borderRadius: "20px",
+                    fontSize: isMobile ? "12px" : "13px",
+                    fontWeight: "600"
+                  }}>
+                    <Clock size={15} />
+                    <span>Espera estimada: {esperaEstimada}</span>
                   </div>
                 </div>
 
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", fontSize: "12px", color: "#94a3b8" }}>
-                  <RefreshCw size={14} style={{ animation: "spin 2s linear infinite" }} />
-                  <span>Actualizando automáticamente cada 5 segundos (Sondeo #{pollingCount})...</span>
+                {/* Indicador de actualización */}
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  fontSize: "12px",
+                  color: "#94a3b8"
+                }}>
+                  <RefreshCw size={13} style={{ animation: "spin 2s linear infinite", flexShrink: 0 }} />
+                  <span>
+                    {isMobile
+                      ? `Actualizando... (sondeo #${pollingCount})`
+                      : `Actualizando automáticamente cada 5 segundos (Sondeo #${pollingCount})...`}
+                  </span>
                 </div>
               </div>
             ) : null}
@@ -287,18 +375,23 @@ export default function ColaVirtualPage() {
             {/* Aviso inferior */}
             {!turnoExpirado && (
               <div style={{
-                marginTop: "30px",
-                paddingTop: "20px",
+                marginTop: "24px",
+                paddingTop: "18px",
                 borderTop: "1px solid #f1f5f9",
                 display: "flex",
-                alignItems: "center",
+                alignItems: "flex-start",
                 justifyContent: "center",
                 gap: "8px",
                 fontSize: "12px",
-                color: "#64748b"
+                color: "#64748b",
+                lineHeight: "1.5"
               }}>
-                <ShieldCheck size={16} color="#10b981" />
-                <span>Por favor, mantenga abierta esta ventana. El sistema lo redirigirá en cuanto llegue su turno.</span>
+                <ShieldCheck size={15} color="#10b981" style={{ flexShrink: 0, marginTop: "1px" }} />
+                <span>
+                  {isMobile
+                    ? "Mantenga esta ventana abierta. Lo redirigiremos en su turno."
+                    : "Por favor, mantenga abierta esta ventana. El sistema lo redirigirá en cuanto llegue su turno."}
+                </span>
               </div>
             )}
           </div>
