@@ -15,27 +15,32 @@ export default function ColaVirtualPage() {
   const [pollingCount, setPollingCount] = useState(0);
   const [turnoExpirado, setTurnoExpirado] = useState(false);
 
+  // Función reutilizable para registrar/re-registrar en cola
+  const registrarEnCola = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      setTurnoExpirado(false);
+      setTurnoActivo(false);
+      const res = await api.ingresarCola();
+      setPosicion(res.posicion);
+      if (res.turno_activo) {
+        const seg = res.segundos_restantes ?? 300;
+        setSegundosRestantes(seg);
+        localStorage.setItem("turno_segundos", String(seg));
+        setTurnoActivo(true);
+      }
+    } catch (err) {
+      setError(err.message || "Error al acceder a la sala de espera.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // 1. Inscribir en cola al montar
   useEffect(() => {
-    const registrarEnCola = async () => {
-      try {
-        setLoading(true);
-        const res = await api.ingresarCola();
-        setPosicion(res.posicion);
-        if (res.turno_activo) {
-          const seg = res.segundos_restantes ?? 300;
-          setSegundosRestantes(seg);
-          localStorage.setItem("turno_segundos", String(seg));
-          setTurnoActivo(true);
-        }
-      } catch (err) {
-        setError(err.message || "Error al acceder a la sala de espera.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     registrarEnCola();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 2. Polling periódico cada 5 segundos — SOLO cuando el turno NO está activo
@@ -69,8 +74,13 @@ export default function ColaVirtualPage() {
           clearInterval(intervalo);
           setView("confirmacion");
         } else if (redirect === "/cola-virtual" || err.data?.expirado) {
+          // Turno expirado en servidor → re-inscribir automáticamente sin recargar página
           clearInterval(intervalo);
-          setError("Su turno expiró. Si desea matricularse, recargue la página para reingresar a la cola.");
+          registrarEnCola();
+        } else if (err.status === 404) {
+          // No registrado en cola → re-inscribir automáticamente
+          clearInterval(intervalo);
+          registrarEnCola();
         } else {
           setError(err.message);
         }
@@ -91,9 +101,10 @@ export default function ColaVirtualPage() {
         localStorage.setItem("turno_segundos", String(next));
         if (next <= 0) {
           clearInterval(tick);
-          api.timeoutMatricula().catch(() => {});
-          setTurnoExpirado(true);
-          setTurnoActivo(false);
+          // Expiró en la cola → avisar al servidor y re-inscribir automáticamente
+          api.timeoutMatricula()
+            .catch(() => {})
+            .finally(() => { registrarEnCola(); });
         }
         return Math.max(0, next);
       });
