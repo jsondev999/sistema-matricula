@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.10.16)  22 OCT 2026 22:51
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (MiKTeX 25.12) (preloaded format=pdflatex 2026.10.16)  22 OCT 2026 23:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1210,7 +1210,7 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.43 ...rministas (Functions)}{29}{subsection.6.2}
+l.43 ...rministas (Functions)}{30}{subsection.6.2}
                                                   % [1])
 \tf@toc=\write5
 \openout5 = `informe_sustentacion.toc'.
@@ -1710,10 +1710,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-1.59999pt}.
 
 [32]
-Overfull \hbox (30.41222pt too wide) in paragraph at lines 905--920
-[][] 
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 13.59999pt, for example:
@@ -1733,11 +1729,11 @@ Package rerunfilecheck Info: File `informe_sustentacion.out' has not changed.
 (rerunfilecheck)             Checksum: 0153362D2CF5018A39E16A9D8640C5C3;13207.
  ) 
 Here is how much of TeX's memory you used:
- 33455 strings out of 467871
- 644921 string characters out of 5417407
+ 33477 strings out of 467871
+ 645140 string characters out of 5417407
  1199384 words of memory out of 5000000
- 61371 multiletter control sequences out of 15000+600000
- 694221 words of font info for 168 fonts, out of 8000000 for 9000
+ 61379 multiletter control sequences out of 15000+600000
+ 701128 words of font info for 178 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  98i,13n,108p,1019b,2078s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/USUARIO/AppData/Local/Programs/MiKTeX/fonts/type1/public/lm/lmbx10.
@@ -1753,10 +1749,9 @@ c/lm/lmtk10.pfb><C:/Users/USUARIO/AppData/Local/Programs/MiKTeX/fonts/type1/pub
 lic/lm/lmtt10.pfb><C:/Users/USUARIO/AppData/Local/Programs/MiKTeX/fonts/type1/p
 ublic/lm/lmtt12.pfb><C:/Users/USUARIO/AppData/Local/Programs/MiKTeX/fonts/type1
 /public/lm/lmtti10.pfb>
-Output written on C:\Users\USUARIO\Desktop\PROYECTOS\sistema-matricula\informe_
-sustentacion.pdf (34 pages, 1011612 bytes).
+Output written on informe_sustentacion.pdf (34 pages, 1011914 bytes).
 PDF statistics:
  781 PDF objects out of 1000 (max. 8388607)
  272 named destinations out of 1000 (max. 500000)
- 39896 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 44504 words of extra memory for PDF output out of 51595 (max. 10000000)
 

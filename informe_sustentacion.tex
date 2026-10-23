@@ -902,21 +902,22 @@ El dise\~no deliberado de depositar la l\'ogica cr\'itica en procedimientos alma
 
 \begin{tcolorbox}[colback=unjbgblue!5, colframe=unjbgblue,
   title=Resumen de Objetos de Base de Datos Implementados]
-\begin{tabular}{llp{7cm}}
+\small
+\begin{tabularx}{\linewidth}{@{} l >{\ttfamily\footnotesize}l X @{}}
   \toprule
-  \textbf{Tipo} & \textbf{Nombre} & \textbf{Prop\'osito} \\
+  \textbf{Tipo} & \normalfont\textbf{Nombre} & \textbf{Prop\'osito} \\
   \midrule
-  SP & \texttt{sp\_determinar\_limite\_creditos} & Clasifica condici\'on y calcula tope de cr\'editos \\
-  SP & \texttt{sp\_matricular\_curso} & Reserva vacante con bloqueo pesimista (FOR UPDATE) \\
-  SP & \texttt{sp\_confirmar\_matricula} & Transacci\'on at\'omica de confirmaci\'on final \\
+  SP & sp\_determinar\_limite\_creditos & Clasifica condici\'on y calcula tope de cr\'editos \\
+  SP & sp\_matricular\_curso & Reserva vacante con bloqueo pesimista (\texttt{FOR UPDATE}) \\
+  SP & sp\_confirmar\_matricula & Transacci\'on at\'omica de confirmaci\'on final \\
   \midrule
-  FN & \texttt{fn\_validar\_cronograma} & Verifica acceso seg\'un cronograma oficial \\
-  FN & \texttt{fn\_validar\_cruces\_horario} & Detecta solapamientos de horario \\
-  FN & \texttt{fn\_validar\_requisitos\_completos} & Verifica 4 documentos del portafolio \\
+  FN & fn\_validar\_cronograma & Verifica acceso seg\'un cronograma oficial \\
+  FN & fn\_validar\_cruces\_horario & Detecta solapamientos de horario \\
+  FN & fn\_validar\_requisitos\_completos & Verifica 4 documentos del portafolio \\
   \midrule
-  VW & \texttt{vw\_ficha\_matricula} & Vista consolidada para generaci\'on de Ficha PDF \\
+  VW & vw\_ficha\_matricula & Vista consolidada para generaci\'on de Ficha PDF \\
   \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{tcolorbox}
 
 \end{document}
