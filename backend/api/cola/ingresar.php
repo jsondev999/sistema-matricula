@@ -76,11 +76,45 @@ if (!$cola) {
 $stmtPeriodo = $pdo->query("SELECT id_periodo FROM periodo_academico WHERE estado = 'ACTIVO' LIMIT 1");
 $id_periodo = $stmtPeriodo->fetch()['id_periodo'] ?? 1;
 
-$stmtProforma = $pdo->prepare("
-    INSERT IGNORE INTO matricula (id_estudiante, id_periodo, total_creditos, monto_total, estado, es_editable, fecha_creacion_proforma)
-    VALUES (?, ?, 0, 120.00, 'PROFORMA', TRUE, NOW())
+// Verificar si ya existe una matrícula para este estudiante y periodo
+$stmtExistente = $pdo->prepare("
+    SELECT id_matricula, estado, es_editable
+    FROM matricula
+    WHERE id_estudiante = ? AND id_periodo = ?
+    LIMIT 1
 ");
-$stmtProforma->execute([$estudiante['id_estudiante'], $id_periodo]);
+$stmtExistente->execute([$estudiante['id_estudiante'], $id_periodo]);
+$matriculaExistente = $stmtExistente->fetch();
+
+if ($matriculaExistente) {
+    // Si existe pero está CANCELADA (turno expirado anterior), reactivarla como PROFORMA editable
+    if (in_array($matriculaExistente['estado'], ['CANCELADA', 'EXPIRADA'])) {
+        $stmtReactivar = $pdo->prepare("
+            UPDATE matricula
+            SET estado = 'PROFORMA',
+                es_editable = TRUE,
+                total_creditos = 0,
+                id_pago = NULL,
+                fecha_confirmacion = NULL,
+                codigo_verificacion = NULL,
+                fecha_creacion_proforma = NOW()
+            WHERE id_matricula = ?
+        ");
+        $stmtReactivar->execute([$matriculaExistente['id_matricula']]);
+
+        // También limpiar detalles anteriores de esa matrícula para empezar limpio
+        $stmtLimpiar = $pdo->prepare("DELETE FROM detalle_matricula WHERE id_matricula = ?");
+        $stmtLimpiar->execute([$matriculaExistente['id_matricula']]);
+    }
+    // Si ya está CONFIRMADA, no tocar (protección)
+} else {
+    // No existe ningún registro: crear uno nuevo
+    $stmtProforma = $pdo->prepare("
+        INSERT INTO matricula (id_estudiante, id_periodo, total_creditos, monto_total, estado, es_editable, fecha_creacion_proforma)
+        VALUES (?, ?, 0, 120.00, 'PROFORMA', TRUE, NOW())
+    ");
+    $stmtProforma->execute([$estudiante['id_estudiante'], $id_periodo]);
+}
 
 // Obtener segundos restantes reales si el turno ya está habilitado
 $segundosRestantes = null;
